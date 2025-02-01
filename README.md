@@ -97,15 +97,6 @@ Parameters:                                                                  Def
 * P.S. Также при необходимости, если работают оба сервера (http.net и
 * https.net) можно использовать переменную окружения m.SERVER_PROTOCOL.
 
-* Функция чтения стандартного ввода при наличии в нем больших данных.
-* offset - номер предыдущего прочитанного символа
-*          или 0 для чтения сначала;
-* count - количество читаемых символов.
-Func STD_Read(offset, count)
-  _Screen.STD_IO.SelStart = m.offset
-  _Screen.STD_IO.SelLength = m.count
-Return Strconv(_Screen.STD_IO.SelText,11)
-
 * Функция записи в стандартный вывод при необходимости записи
 * больших данных:
 Func STD_Write(mess)
