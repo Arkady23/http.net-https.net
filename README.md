@@ -4,7 +4,7 @@ Multithreaded http.net and https.net C# servers using the dotNet v4 framework in
 ### General information
 The root folder for domains (www by default) should contain folders corresponding to the domain name and subdomain of the requested resource. If the request looks like http://a.kornienko.ru or https://a.kornienko.ru, then the root folder for domains should contain a folder named a.kornienko.ru, for example D:/work/www/a.kornienko.ru. If you need the folder to open at a different address, you should create a corresponding symbolic link to the same folder so that one folder is available at two different paths. To do this, use the Windows mklink command with the /d key.  
 
-The number of threads should not be set to the maximum possible. The default is 400. Watch the log, the last numeric field in each entry shows the number of the running thread. Over time, you will understand how many simultaneous threads you have in use. This value is probably much less than 100 and even less than 10.  
+The number of threads should not be set to the maximum possible. The default is 50. Watch the log, the last numeric field in each entry shows the number of the running thread. Over time, you will understand how many simultaneous threads you have in use. This value is probably much less than 50.  
 
 WSF scripts can be processed using the cscript.exe handler. In the http and/or https server settings, you can replace this script extension and handler with any other that you prefer for one reason or another - the popular php or the modern "dotnet fsi" that executes scripts with the fsx extension written in F#. However, Microsoft currently supports WSH in both 32-bit and 64-bit versions.  
 
@@ -29,13 +29,13 @@ Parameters:                                                                  Def
              files compressed using gzip method of the name.expansion.gz type
              are supported, for example - index.html.gz or library.js.gz etc.
      -p      Port that the server is listening on.                               8080
-     -b      Size of read/write buffers.                                         8192
-     -s      Number of requests being processed at the same time. Maximum        400
+     -b      Size of read/write buffers.                                         131072
+     -s      Number of requests being processed at the same time. Maximum        50
              value is 1000.
-     -q      Number requests stored in the queue.                                600
+     -q      Number requests stored in the queue.                                500
      -w      Allowed time to reserve an open channel for request that did not    10
              started. From 1 to 20 seconds.
-     -db     Maximum number of dynamically running MS VFP DBMS instances.        20
+     -db     Maximum number of dynamically running MS VFP DBMS instances.        25
              Extending scripts to run VFP - prg. Processes are started as
              needed by simultaneous client requests to the set value. Maximum
              value is 1000.
@@ -64,7 +64,7 @@ Parameters:                                                                  Def
 ### Общие сведения
 Корневая папка для доменов (по умолчанию www) должна содержать папки, соответствующие доменному имени и поддомену запрашиваемого ресурса. Если запрос выглядит как http://a.kornienko.ru или https://a.kornienko.ru, то в корневой папке для доменов должна быть папка с именем a.kornienko.ru, например D:/work/www/a.kornienko.ru. Если вам нужно, чтобы эта же папка открывалась по другому адресу, то вы должны на эту папку создать соответствующую символическую ссылку, чтобы одна папка была доступна по двум разным путям. Для этого воспользуйтесь командой Windows mklink с ключем /d.  
 
-Число потоков не следут задавать максимально возможным. По умолчанию — 400. Наблюдайте за журналом, в последнем числовом поле в каждой записи отображен номер работающего потока. Со временем вы поймете какое число одновременных потоков у вас используется. Вероятно это значение намного меньше 100 и даже меньше 10.   
+Число потоков не следут задавать максимально возможным. По умолчанию — 50. Наблюдайте за журналом, в последнем числовом поле в каждой записи отображен номер работающего потока. Со временем вы поймете какое число одновременных потоков у вас используется. Вероятно это значение намного меньше 50.   
 
 Предусмотрена обработка wsf-скриптов с помощью обработчика cscript.exe. В параметрах http и/или https сервера вы можете заменить это расширение скрипта и обработчик на любое другое, которому вы по тем или иным причинам отдаете предпочтение — на популярный php или на современный "dotnet fsi", выполняющий скрипты с расширением fsx, написанные на F#. Тем не менее Microsoft по настоящее время поддерживает WSH как в 32-х битной, так и в 64-х битной версиях.  
 
@@ -72,10 +72,10 @@ Parameters:                                                                  Def
 ### Пример prg скрипта
 ```
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-*  Тест. Вывод переменных окружения.                   версия 07.01.2025  *
+*  Тест. Вывод переменных окружения.                   версия 01.02.2025  *
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   c13 = chr(13) + chr(10)
-  STD_INPUT = _Screen.STD_IO.value
+  STD_INPUT = Strconv(_Screen.STD_IO.value,11)
 
 * P.S. До этого присвоения информация из _Screen.STD_IO.value, находящаяся
 * в качестве стандартного ввода, должна быть прочитана:
@@ -104,13 +104,13 @@ Parameters:                                                                  Def
 Func STD_Read(offset, count)
   _Screen.STD_IO.SelStart = m.offset
   _Screen.STD_IO.SelLength = m.count
-Return _Screen.STD_IO.SelText
+Return Strconv(_Screen.STD_IO.SelText,11)
 
 * Функция записи в стандартный вывод при необходимости записи
 * больших данных:
 Func STD_Write(mess)
   _Screen.STD_IO.SelStart = len(_Screen.STD_IO.value)
-  _Screen.STD_IO.SelText = mess
+  _Screen.STD_IO.SelText = Strconv(mess,9)
 ```
 The visual result of the prg script:
 ![The visual result of the prg script](screenShots/2024-03-21.png)
@@ -122,7 +122,7 @@ If there is an error in the prg file:
 #### Классические обработчики
 Существуют весьма разнообразные обработчики. Среди них есть такие, которые не поддерживают многобыйтовые строки в UTF-8 кодировке, например, cscript.exe. Серверы http/https.net передают POST данные так, как есть, и если требуется перекодировка данных, то это должны делать сами скрипты.
 #### Обработчик VFP/VFPA
-Для prg скриптов серверы http/https.net учитывают специфику VFP/VFPA. В качастве стандартного ввода-вывода для VFP серверы формируют объект _Screen.STD_IO на базе типа EditBox. Если входной поток POST принимается в UTF-8, то серверы перед помещением данных POST в _Screen.STD_IO перекодируют его в ту кодировку, которая исползуется VFP/VFPA, например в Windows-1251. Дополнительно самому prg скрипту ничего перекодировать не требуется. Как эффективно читать и писать в этот объект приведено в примере выше.  
+Для prg скриптов в качастве стандартного ввода-вывода для VFP серверы формируют объект _Screen.STD_IO на базе типа EditBox. Также, как и для классических обработчиков, prg скрипт должен кодировать данные в _Screen.STD_IO в необходимую кодировку, например в UTF-8. В VFP/VFPA для этого есть удобная функция Strconv(). Для конвертации в UTF-8 строки mess, используется команда `UTF_mess=Strconv(mess,9)`. Чтобы конвертировать строку из кодировки UTF-8 используется обращение `mess=Strconv(UTF_mess,11)`.  
 
 По окончанию работы prg скрипта объект _Screen.STD_IO удаляется. Не смотря на то, что согласно документации в объектах типа EditBox можно размещать текст объемом до 2 гигабайт, мне удалось разместить в нем до критической ошибки о нехватке памяти около 200 мегабайт. Вероятно в VFP/VFPA происходит утечка памяти. Поэтому очень важно по окончании работы prg делать очистку всех переменных и объектов, в том числе _Screen.STD_IO.   
 ##### Очистка VFP/VFPA после окончания работы prg скрипта
