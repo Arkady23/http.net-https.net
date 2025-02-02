@@ -59,12 +59,20 @@ namespace http1 {
     }
 
     public void StartAccept() {
-       int j;
+       int j = 0;
        while (f.notExit) {
           f.maxNumberAcceptedClients.WaitOne();
-          if (f.notExit) {
-             j = f.freeClientsPool.Pop();
-             t[j] = f.session[j].AcceptAsync(listenSocket.AcceptAsync());
+          if (f.notExit) if (f.freeClientsPool.Count>0) {
+              j = f.freeClientsPool.Pop();
+              t[j] = f.session[j].AcceptAsync(listenSocket.AcceptAsync());
+          } else {
+            while (f.notExit && f.freeClientsPool.Count==0) {
+              if (j>=0) {
+                 f.log2("\tThe number of running tasks has exceeded allowed value of "+f.st+".");
+                 j = -1;
+              }
+              System.Threading.Thread.Sleep(500);
+            }
           }
        }
     }
