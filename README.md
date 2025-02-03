@@ -4,7 +4,7 @@ Multithreaded http.net and https.net C# servers using the dotNet v4 framework in
 ### General information
 The root folder for domains (www by default) should contain folders corresponding to the domain name and subdomain of the requested resource. If the request looks like http://a.kornienko.ru or https://a.kornienko.ru, then the root folder for domains should contain a folder named a.kornienko.ru, for example: D:/work/www/a.kornienko.ru. If you need the folder to open at a different address, you should create a corresponding symbolic link to the same folder so that one folder is available at two different paths. To do this, use the Windows mklink command with the /d key.  
 
-The number of threads should not be set to the maximum possible. The default is 50. Watch the log, the last numeric field in each entry shows the number of the running thread. Over time, you will understand how many simultaneous threads you have in use. This value is probably much less than 50.  
+The number of threads should not be set to the maximum possible. The default is 50. Watch the log, the last numeric field in each entry shows the number of the running thread. Over time, you will understand how many simultaneous threads you have in use. This value is probably significantly less than 50.  
 
 WSF scripts can be processed using the cscript.exe handler. In the http and/or https server settings, you can replace this script extension and handler with any other that you prefer for one reason or another — the popular php or the modern "dotnet fsi" that executes scripts with the fsx extension written in F#. However, Microsoft currently supports WSH in both 32-bit and 64-bit versions.  
 
@@ -64,7 +64,7 @@ Parameters:                                                                  Def
 ### Общие сведения
 Корневая папка для доменов (по умолчанию www) должна содержать папки, соответствующие доменному имени и поддомену запрашиваемого ресурса. Если запрос выглядит как http://a.kornienko.ru или https://a.kornienko.ru, то в корневой папке для доменов должна быть папка с именем a.kornienko.ru, например: D:/work/www/a.kornienko.ru. Если вам нужно, чтобы эта же папка открывалась по другому адресу, то вы должны на эту папку создать соответствующую символическую ссылку, чтобы одна папка была доступна по двум разным путям. Для этого воспользуйтесь командой Windows mklink с ключем /d.  
 
-Число потоков не следут задавать максимально возможным. По умолчанию — 50. Наблюдайте за журналом, в последнем числовом поле в каждой записи отображен номер работающего потока. Со временем вы поймете какое число одновременных потоков у вас используется. Вероятно это значение намного меньше 50.   
+Число потоков не следут задавать максимально возможным. По умолчанию — 50. Наблюдайте за журналом, в последнем числовом поле в каждой записи отображен номер работающего потока. Со временем вы поймете какое число одновременных потоков у вас используется. Вероятно это значение значительно меньше 50.  
 
 Предусмотрена обработка wsf-скриптов с помощью обработчика cscript.exe. В параметрах http и/или https сервера вы можете заменить это расширение скрипта и обработчик на любое другое, которому вы по тем или иным причинам отдаете предпочтение — на популярный php или на современный "dotnet fsi", выполняющий скрипты с расширением fsx, написанные на F#. Тем не менее Microsoft по настоящее время поддерживает WSH как в 32-х битной, так и в 64-х битной версиях.  
 
