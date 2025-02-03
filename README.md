@@ -136,7 +136,7 @@ If there is an error in the prg file:
 #### Классические обработчики
 Если вы используете обработчик cscript с языком Jscript и для отправки POST данных кодируете символы национальных алфавитов с помощью функции encodeURIComponent(), то обратное преобразование выполняется командой `WINstring=decodeURIComponent(STD_IO)`.
 #### Обработчик VFP/VFPA
-Для оброботчика VFP/VFP, чтобы формировать строки в кодировке UTF-8, можно использовать команду `UTFstring=Strconv(VFPstring,9)`.
+Для оброботчика VFP/VFPA, чтобы формировать строки в кодировке UTF-8, можно использовать команду `UTFstring=Strconv(VFPstring,9)`.
 ### Обсуждение
 Задать вопрос или обсудить тему, касающуюся серверов http/https.net или VFP/VFPA, вы можете в разделе проекта Issues > New issue.  
 
