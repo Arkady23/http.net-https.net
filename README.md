@@ -200,4 +200,4 @@ If there is an error in the prg file:
 2.6.10. November 2024. The logs are switched between each other when one of them is filled up to a set number of lines.  
 2.7.0. Added an option to start the server with the command line parameters located in the file.  
 3.0.0. January 2025. The appearance of the program has been changed from a console application to a form. The icon has been added to the tray. Now one socket buffer is used to read the request, and the same is used to write the response. The _Screen.STD_IO object has been added to VFP, which is used as standard input/output. The Return operator is now used only in API mode to return the HTTP status code. Double buffering is also used. In fact, one buffer is equal to half of the value specified by the parameters. Double buffering improves server performance.  
-3.1.0. February 2025. Оптимизация кода, добавлено удаление оставшихся сессионных папок после выполнения POST в файл.  
+3.1.0. February 2025. Оптимизация кода, добавлено удаление сессионной папки клиента после выполнения POST в файл.  
