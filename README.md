@@ -4,14 +4,14 @@ Multithreaded http.net and https.net C# servers using the dotNet v4 framework in
 ### General information
 The root folder for domains (www by default) should contain folders corresponding to the domain name and subdomain of the requested resource. If the request looks like http://a.kornienko.ru or https://a.kornienko.ru, then the root folder for domains should contain a folder named a.kornienko.ru, for example: D:/work/www/a.kornienko.ru. If you need the folder to open at a different address, you should create a corresponding symbolic link to the same folder so that one folder is available at two different paths. To do this, use the Windows mklink command with the /d key.  
 
-The number of threads should not be set to the maximum possible. The default is 50. Watch the log, the last numeric field in each entry shows the number of the running thread. Over time, you will understand how many simultaneous threads you have in use. This value is probably significantly less than 50.  
+The number of threads should not be set to the maximum possible. The default is 500. Watch the log, the last numeric field in each entry shows the number of the running thread. Over time, you will understand how many simultaneous threads you have in use. This value is probably significantly less than 500.  
 
 WSF scripts can be processed using the cscript.exe handler. In the http and/or https server settings, you can replace this script extension and handler with any other that you prefer for one reason or another — the popular php or the modern "dotnet fsi" that executes scripts with the fsx extension written in F#. However, Microsoft currently supports WSH in both 32-bit and 64-bit versions.  
 
 Servers also provides processing of prg scripts via COM technology with VFP 9/10(Advanced) DBMS, not CGI. COM objects are created as requests from simultaneously accessing clients are made to the maximum value specified in the server parameters. By default, the visual error output of the VFP 9/10(Advanced) DBMS is disabled. In case of an error in the prg, the description of this error is returned to the script in the ERROR_MESS variable. Below is an example of a prg file and the result of its work. And also the result of a similar prg file, but with an error (the last line break ";" is missing).
 ```
 PS D:\> D:\work\httpd\http.net.exe /?
-Multithreaded http.net server version 3.1.0, (C) a.kornienko.ru February 2025.
+Multithreaded http.net server version 3.1.1, (C) a.kornienko.ru February 2025.
 
 USAGE:
     http.net [Parameter1 Value1] [Parameter2 Value2] ...
@@ -30,12 +30,12 @@ Parameters:                                                                  Def
              are supported, for example - index.html.gz or library.js.gz etc.
      -p      Port that the server is listening on.                               8080
      -b      Size of read/write buffers.                                         131072
-     -s      Number of requests being processed at the same time. Maximum        50
+     -s      Number of requests being processed at the same time. Maximum        500
              value is 1000.
-     -q      Number requests stored in the queue.                                500
+     -q      Number requests stored in the queue.                                5000
      -w      Allowed time to reserve an open channel for request that did not    10
              started. From 1 to 20 seconds.
-     -db     Maximum number of dynamically running MS VFP DBMS instances.        25
+     -db     Maximum number of dynamically running MS VFP DBMS instances.        50
              Extending scripts to run VFP - prg. Processes are started as
              needed by simultaneous client requests to the set value. Maximum
              value is 1000.
@@ -64,7 +64,7 @@ Parameters:                                                                  Def
 ### Общие сведения
 Корневая папка для доменов (по умолчанию www) должна содержать папки, соответствующие доменному имени и поддомену запрашиваемого ресурса. Если запрос выглядит как http://a.kornienko.ru или https://a.kornienko.ru, то в корневой папке для доменов должна быть папка с именем a.kornienko.ru, например: D:/work/www/a.kornienko.ru. Если вам нужно, чтобы эта же папка открывалась по другому адресу, то вы должны на эту папку создать соответствующую символическую ссылку, чтобы одна папка была доступна по двум разным путям. Для этого воспользуйтесь командой Windows mklink с ключем /d.  
 
-Число потоков не следут задавать максимально возможным. По умолчанию — 50. Наблюдайте за журналом, в последнем числовом поле в каждой записи отображен номер работающего потока. Со временем вы поймете какое число одновременных потоков у вас используется. Вероятно это значение значительно меньше 50.  
+Число потоков не следут задавать максимально возможным. По умолчанию — 500. Наблюдайте за журналом, в последнем числовом поле в каждой записи отображен номер работающего потока. Со временем вы поймете какое число одновременных потоков у вас используется. Вероятно это значение значительно меньше 500.  
 
 Предусмотрена обработка wsf-скриптов с помощью обработчика cscript.exe. В параметрах http и/или https сервера вы можете заменить это расширение скрипта и обработчик на любое другое, которому вы по тем или иным причинам отдаете предпочтение — на популярный php или на современный "dotnet fsi", выполняющий скрипты с расширением fsx, написанные на F#. Тем не менее Microsoft по настоящее время поддерживает WSH как в 32-х битной, так и в 64-х битной версиях.  
 
@@ -200,4 +200,5 @@ If there is an error in the prg file:
 2.6.10. November 2024. The logs are switched between each other when one of them is filled up to a set number of lines.  
 2.7.0. Added an option to start the server with the command line parameters located in the file.  
 3.0.0. January 2025. The appearance of the program has been changed from a console application to a form. The icon has been added to the tray. Now one socket buffer is used to read the request, and the same is used to write the response. The _Screen.STD_IO object has been added to VFP, which is used as standard input/output. The Return operator is now used only in API mode to return the HTTP status code. Double buffering is also used. In fact, one buffer is equal to half of the value specified by the parameters. Double buffering improves server performance.  
-3.1.0. February 2025. Оптимизация кода, добавлено удаление сессионной папки клиента после выполнения POST в файл.  
+3.1.0. February 2025. Code optimization, added deletion of the client's session folder after performing a POST to a file.  
+3.1.1. February 2025. Increasing the maximum number of threads and default databases used.  
