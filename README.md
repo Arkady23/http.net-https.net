@@ -128,7 +128,9 @@ If there is an error in the prg file:
   clos all
  _Screen.RemoveObject('STD_IO')
 ```
-Однако вместо этих команд вы можете использовать свой вариант очистки, создав файл VFPclear.prg в папке, на которую указывает команда VFP sys(2004). Важно, чтобы вы не забыли добавить в этот файл указанные выше команды, в противном случае VFP/VFPA может работать не стабильно.
+Однако вместо этих команд вы можете использовать свой вариант очистки, создав файл VFPclear.prg в папке, на которую указывает команда VFP sys(2004). Важно, чтобы вы не забыли добавить в этот файл указанные выше команды, в противном случае VFP/VFPA может работать не стабильно.  
+
+Если вы работаете с большими объемами памяти или предполагается большая нагрузка на VFP, то вместо очиски памяти, лучше использовать полное закрытие VFP командой quit. В этом случае по окончанию работы вашего prg-скрипта сервер перезапустит VFP.
 #### Передача входящего потока в файл
 Серверы http.net и https.net воспринимают поток POST, если он присутствует, в двух вариантах — как стандартный ввод или как принимаемый произвольный файл, в зависимости от заголовка "Content-Disposition". Если в этом заголовке обнаружен параметр "filename", то весь поток POST помещается в указанный параметром filename файл.
 ### Исходящий поток и кодировка
@@ -202,3 +204,4 @@ If there is an error in the prg file:
 3.0.0. January 2025. The appearance of the program has been changed from a console application to a form. The icon has been added to the tray. Now one socket buffer is used to read the request, and the same is used to write the response. The _Screen.STD_IO object has been added to VFP, which is used as standard input/output. The Return operator is now used only in API mode to return the HTTP status code. Double buffering is also used. In fact, one buffer is equal to half of the value specified by the parameters. Double buffering improves server performance.  
 3.1.0. February 2025. Code optimization, added deletion of the client's session folder after performing a POST to a file.  
 3.1.1. February 2025. Increasing the maximum number of threads and default databases used.  
+3.2.0. March 2025. Added launch of vfp instance if user quit it.  
