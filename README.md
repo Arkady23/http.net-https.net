@@ -76,14 +76,17 @@ Parameters:                                                                  Def
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   c13 = chr(13) + chr(10)
   STD_INPUT = Strconv(_Screen.STD_IO.value,11)
+*  STD_INPUT = Strconv(STD_IO.ReadToEnd(),11)
 
 * P.S. До этого присвоения информация из _Screen.STD_IO.value, находящаяся
 * в качестве стандартного ввода, должна быть прочитана:
   _Screen.STD_IO.value = 'Content-Type: text/html; charset="utf-8"' + c13 + c13
+*  STD_IO.Write('Content-Type: text/html; charset="utf-8"' + c13 + c13)
 * Параметр charset="utf-8" указан исключительно для обозревателя интернет, т.к.
 * не все обозреватели отображают страницы в кодировке по умолчанию UTF-8, несмотря
 * на то, что эта кодировка является кодировкой по умолчанию в стандартах html.
 
+*  STD_IO.Write("<h1>Привет мир из MS VFP!</h1>" + ;
   STD_Write("<h1>Привет мир из MS VFP!</h1>" + ;
      "<h3>Переменные окружения:</h3>" + ;
      "SCRIPT_FILENAME=" + SCRIPT_FILENAME + ";<br>" + c13 + ;
@@ -93,6 +96,7 @@ Parameters:                                                                  Def
      "STD_INPUT=" + STD_INPUT + ";<br>" + c13 + ;
      "POST_FILENAME=" + POST_FILENAME + ";<br>" + c13)
   STD_Write("ERROR_MESS=" + ERROR_MESS)
+*  STD_IO.Write("ERROR_MESS=" + ERROR_MESS)
 
 * P.S. Также при необходимости, если работают оба сервера (http.net и
 * https.net) можно использовать переменную окружения m.SERVER_PROTOCOL.
