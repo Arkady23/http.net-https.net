@@ -133,6 +133,7 @@ If there is an error in the prg file:
   clos data all
   clos all
  _Screen.RemoveObject('STD_IO')
+*  STD_IO.CloseAll()
 ```
 Однако вместо этих команд вы можете использовать свой вариант очистки, создав файл VFPclear.prg в папке, на которую указывает команда VFP sys(2004). Важно, чтобы вы не забыли добавить в этот файл указанные выше команды, в противном случае VFP/VFPA может работать не стабильно.  
 
