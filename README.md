@@ -72,40 +72,30 @@ Parameters:                                                                  Def
 ### Пример prg скрипта
 ```
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-*  Тест. Вывод переменных окружения.                   версия 01.02.2025  *
+*  Тест. Вывод переменных окружения.                   версия 10.02.2025  *
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-  c13 = chr(13) + chr(10)
-  STD_INPUT = Strconv(_Screen.STD_IO.value,11)
-*  STD_INPUT = Strconv(STD_IO.ReadToEnd(),11)
+  CRLF = chr(13) + chr(10)
+  STD_INPUT = Strconv(STD_IO.ReadToEnd(),11)
 
-* P.S. До этого присвоения информация из _Screen.STD_IO.value, находящаяся
-* в качестве стандартного ввода, должна быть прочитана:
-  _Screen.STD_IO.value = 'Content-Type: text/html; charset="utf-8"' + c13 + c13
-*  STD_IO.Write('Content-Type: text/html; charset="utf-8"' + c13 + c13)
+* P.S. До этого присвоения информация из STD_IO, находящаяся в качестве
+* стандартного ввода, должна быть прочитана:
+  STD_IO.Write('Content-Type: text/html; charset="utf-8"' + CRLF + CRLF)
 * Параметр charset="utf-8" указан исключительно для обозревателя интернет, т.к.
 * не все обозреватели отображают страницы в кодировке по умолчанию UTF-8, несмотря
 * на то, что эта кодировка является кодировкой по умолчанию в стандартах html.
 
-*  STD_IO.Write("<h1>Привет мир из MS VFP!</h1>" + ;
-  STD_Write("<h1>Привет мир из MS VFP!</h1>" + ;
+  STD_IO.Write("<h1>Привет мир из MS VFP!</h1>" + ;
      "<h3>Переменные окружения:</h3>" + ;
-     "SCRIPT_FILENAME=" + SCRIPT_FILENAME + ";<br>" + c13 + ;
-     "QUERY_STRING=" + QUERY_STRING + ";<br>" + c13+ ;
-     "HTTP_COOKIE=" + STRE(HTTP_HEADERS,"Cookie:",c13) + ";<br>" + c13 + ;
-     "REMOTE_ADDR=" + REMOTE_ADDR + ";<br>" + c13 + ;
-     "STD_INPUT=" + STD_INPUT + ";<br>" + c13 + ;
-     "POST_FILENAME=" + POST_FILENAME + ";<br>" + c13)
-  STD_Write("ERROR_MESS=" + ERROR_MESS)
-*  STD_IO.Write("ERROR_MESS=" + ERROR_MESS)
+     "SCRIPT_FILENAME=" + SCRIPT_FILENAME + ";<br>" + CRLF + ;
+     "QUERY_STRING=" + QUERY_STRING + ";<br>" + CRLF + ;
+     "HTTP_COOKIE=" + STRE(HTTP_HEADERS,"Cookie:",CRLF) + ";<br>" + CRLF + ;
+     "REMOTE_ADDR=" + REMOTE_ADDR + ";<br>" + CRLF + ;
+     "STD_INPUT=" + STD_INPUT + ";<br>" + CRLF + ;
+     "POST_FILENAME=" + POST_FILENAME + ";<br>" + CRLF)
+  STD_IO.Write("ERROR_MESS=" + ERROR_MESS)
 
 * P.S. Также при необходимости, если работают оба сервера (http.net и
 * https.net) можно использовать переменную окружения m.SERVER_PROTOCOL.
-
-* Функция записи в стандартный вывод при необходимости записи
-* больших данных:
-Func STD_Write(mess)
-  _Screen.STD_IO.SelStart = len(_Screen.STD_IO.value)
-  _Screen.STD_IO.SelText = Strconv(mess,9)
 ```
 The visual result of the prg script:
 ![The visual result of the prg script](screenShots/2024-03-21.png)
@@ -119,21 +109,20 @@ If there is an error in the prg file:
 
 Если вы используете обработчик cscript с языком JScript и данные POST, содержащие символы национальных алфавитов, закодировали с помощью функции encodeURIComponent(), то обратное преобразование осуществляется командой: `WINstring=decodeURIComponent(STD_IO)`.
 #### Обработчик VFP/VFPA
-Для prg скриптов в качастве стандартного ввода-вывода для VFP серверы формируют объект _Screen.STD_IO на базе типа EditBox. Обычно входящий поток поступает в кодировке UTF-8. Поэтому prg скрипт должен конвертировать эти данные, находящиеся в _Screen.STD_IO, в свою внутреннюю системную кодировку. В VFP/VFPA для этого есть удобная функция Strconv(). Чтобы конвертировать весь входящий поток POST из UTF-8 используется обращение `STD_INPUT=Strconv(_Screen.STD_IO.value,11)`. Если у вас в данных POST не ожидаются буквы национальных алфавитов, а только цифры, буквы английского алфавита и стандартные знаки, то конвертировать входящий поток не обязательно.  
+Для prg скриптов в качастве стандартного ввода-вывода для VFP серверы формируют объект STD_IO, который создается в COM-сервере VFP.memlib. Обычно входящий поток поступает в кодировке UTF-8. Поэтому prg скрипт должен конвертировать эти данные, находящиеся в _Screen.STD_IO, в свою внутреннюю системную кодировку. В VFP/VFPA для этого есть удобная функция Strconv(). Чтобы конвертировать весь входящий поток POST из UTF-8 используется обращение `STD_INPUT=Strconv(STD_IO.value,11)`. Если у вас в данных POST не ожидаются буквы национальных алфавитов, а только цифры, буквы английского алфавита и стандартные знаки, то конвертировать входящий поток не обязательно.  
 
 В VFP/VFPA со временем происходит утечка памяти. Поэтому очень важно по окончании работы prg делать очистку всех переменных и объектов.  
 
-Для безотказной работы MS VFP был разработан COM-сервер [VFP.memlib](https://github.com/Arkady23/VFP.memlib), который может создавать в отдельныой области памяти потоки ввода-вывода и массивы. Тем не менее, если вы создали в VFP.memlib такие объекты, по окончанию работы для освобождения памяти их необходимо закрыть (см. методы VFP.memlib).  
+Для безотказной работы MS VFP был разработан COM-сервер [VFP.memlib](https://github.com/Arkady23/VFP.memlib), который создает потоки ввода-вывода в отдельныой области памяти. По окончанию работы для освобождения памяти, которая занята потоками, используется команда STD_IO.ClaseAll() (см. методы VFP.memlib).  
 ##### Очистка VFP/VFPA после окончания работы prg скрипта
 После окончания работы prg скрипта серверы http/https.net выполняют комады:
 ```
+  STD_IO.CloseAll()
+  clos data all
   clea even
   clea prog
   clea all
-  clos data all
   clos all
- _Screen.RemoveObject('STD_IO')
-*  STD_IO.CloseAll()
 ```
 Однако вместо этих команд вы можете использовать свой вариант очистки, создав файл VFPclear.prg в папке, на которую указывает команда VFP sys(2004). Важно, чтобы вы не забыли добавить в этот файл указанные выше команды, в противном случае VFP/VFPA может работать не стабильно.  
 
@@ -212,3 +201,4 @@ If there is an error in the prg file:
 3.1.0. February 2025. Code optimization, added deletion of the client's session folder after performing a POST to a file.  
 3.1.1. February 2025. Increasing the maximum number of threads and default databases used.  
 3.2.0. March 2025. Added launch of vfp instance if user quit it.  
+3.2.1. March 2025. Since this version, the VFP.memlib COM server is used to implement streams.  
