@@ -23,7 +23,7 @@ USAGE:
 
 Parameters:                                                                  Default values:
      -d      Folder containing the domains.                                      ../www/
-     -i      Main document is in the folders. The main document in the           index.html
+     -i      Main document is in the folder. The main document in the            index.html
              folder specified by the -d parameter is used to display the page
              with the 404 code - file was not found. To compress traffic,
              files compressed using gzip method of the name.expansion.gz type
