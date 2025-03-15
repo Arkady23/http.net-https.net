@@ -11,7 +11,7 @@ WSF scripts can be processed using the cscript.exe handler. In the http and/or h
 Servers also provides processing of prg scripts via COM technology with VFP 9/10(Advanced) DBMS, not CGI. COM objects are created as requests from simultaneously accessing clients are made to the maximum value specified in the server parameters. By default, the visual error output of the VFP 9/10(Advanced) DBMS is disabled. In case of an error in the prg, the description of this error is returned to the script in the ERROR_MESS variable. Below is an example of a prg file and the result of its work. And also the result of a similar prg file, but with an error (the last line break ";" is missing).
 ```
 PS D:\> D:\work\httpd\http.net.exe /?
-Multithreaded http.net server version 3.2.1, (C) a.kornienko.ru March 2025.
+Multithreaded http.net server version 3.2.2, (C) a.kornienko.ru March 2025.
 
 USAGE:
     http.net [Parameter1 Value1] [Parameter2 Value2] ...
@@ -202,3 +202,4 @@ If there is an error in the prg file:
 3.1.1. February 2025. Increasing the maximum number of threads and default databases used.  
 3.2.0. March 2025. Added launch of vfp instance if user quit it.  
 3.2.1. March 2025. Since this version, the VFP.memlib COM server is used to implement streams.  
+3.2.2. March 2025. Removed left spaces from header values ​​(after colons) placed in the HTTP_HEADERS variable.  
