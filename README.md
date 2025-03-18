@@ -117,6 +117,7 @@ If there is an error in the prg file:
 ##### Очистка VFP/VFPA после окончания работы prg скрипта
 После окончания работы prg скрипта серверы http/https.net выполняют комады:
 ```
+  STD_IO.CloseAll();
   clos data all
   clea even
   clea prog
