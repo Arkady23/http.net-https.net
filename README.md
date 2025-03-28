@@ -204,3 +204,4 @@ If there is an error in the prg file:
 3.2.1. March 2025. Since this version, the VFP.memlib COM server is used to implement streams.  
 3.2.2. March 2025. Removed left spaces from header values ​​(after colons) placed in the HTTP_HEADERS variable.  
 3.2.3. March 2025. Fixed a bug with desynchronization of the prg result output.  
+3.2.4. March 2025. Added protection against DoS-​​attacks.  
