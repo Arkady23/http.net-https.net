@@ -1,7 +1,7 @@
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!                                                     !!
 //!!   http.net сервер на C#.      Автор: A.Б.Корниенко  !!
-//!!   Серверный движок            версия от 27.01.2025  !!
+//!!   Серверный движок            версия от 30.03.2025  !!
 //!!                                                     !!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -62,17 +62,9 @@ namespace http1 {
        int j = 0;
        while (f.notExit) {
           f.maxNumberAcceptedClients.WaitOne();
-          if (f.notExit) if (f.freeClientsPool.Count>0) {
+          if (f.notExit) {
               j = f.freeClientsPool.Pop();
               t[j] = f.session[j].AcceptAsync(listenSocket.AcceptAsync());
-          } else {
-            while (f.notExit && f.freeClientsPool.Count==0) {
-              if (j>=0) {
-                 f.log2("\tThe number of running tasks has exceeded allowed value of "+f.st+".");
-                 j = -1;
-              }
-              System.Threading.Thread.Sleep(500);
-            }
           }
        }
     }
