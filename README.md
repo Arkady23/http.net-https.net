@@ -207,4 +207,4 @@ If there is an error in the prg file:
 3.2.4. March 2025. Added protection against DoS-​​attacks. Thanks to the hackers for testing my server sometimes :-)  
 3.2.5. March 2025. The client connection time limit is set according to the -w command line parameter.  
 3.2.6. March 2025. Fixed bugs in versions 3.2.4 and 3.2.5.  
-3.2.7. March 2025. The capacity of the simophore has been reduced by 1 to fix a stack overflow bug during a DoS attack.  
+3.2.7. March 2025. The capacity of the simophore has been reduced by 1 to fix a stack overflow bug during a DoS-attack.  
