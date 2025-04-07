@@ -4,14 +4,14 @@ Multithreaded http.net and https.net C# servers using the dotNet v4 framework in
 ### General information
 The root folder for domains (www by default) should contain folders corresponding to the domain name and subdomain of the requested resource. If the request looks like http://a.kornienko.ru or https://a.kornienko.ru, then the root folder for domains should contain a folder named a.kornienko.ru, for example: D:/work/www/a.kornienko.ru. If you need the folder to open at a different address, you should create a corresponding symbolic link to the same folder so that one folder is available at two different paths. To do this, use the Windows mklink command with the /d key.  
 
-The number of threads should not be set to the maximum possible. The default is 500. Watch the log, the last numeric field in each entry shows the number of the running thread. Over time, you will understand how many simultaneous threads you have in use. This value is probably significantly less than 500.  
+The number of threads should not be set to the maximum possible. The default is 300. Watch the log, the last numeric field in each entry shows the number of the running thread. Over time, you will understand how many simultaneous threads you have in use. This value is probably significantly less than 300.  
 
 WSF scripts can be processed using the cscript.exe handler. In the http and/or https server settings, you can replace this script extension and handler with any other that you prefer for one reason or another — the popular php or the modern "dotnet fsi" that executes scripts with the fsx extension written in F#. However, Microsoft currently supports WSH in both 32-bit and 64-bit versions.  
 
 Servers also provides processing of prg scripts via COM technology with VFP 9/10(Advanced) DBMS, not CGI. COM objects are created as requests from simultaneously accessing clients are made to the maximum value specified in the server parameters. By default, the visual error output of the VFP 9/10(Advanced) DBMS is disabled. In case of an error in the prg, the description of this error is returned to the script in the ERROR_MESS variable. Below is an example of a prg file and the result of its work. And also the result of a similar prg file, but with an error (the last line break ";" is missing).
 ```
 PS D:\> D:\work\httpd\http.net.exe /?
-Multithreaded http.net server version 3.3.0, (C) a.kornienko.ru April 2025.
+Multithreaded http.net server version 3.3.1, (C) a.kornienko.ru April 2025.
 
 USAGE:
     http.net [Parameter1 Value1] [Parameter2 Value2] ...
@@ -30,12 +30,12 @@ Parameters:                                                                  Def
              are supported, for example - index.html.gz or library.js.gz etc.
      -p      Port that the server is listening on.                               8080
      -b      Size of read/write buffers.                                         131072
-     -s      Number of requests being processed at the same time. Maximum        500
+     -s      Number of requests being processed at the same time. Maximum        300
              value is 1000.
-     -q      Number requests stored in the queue.                                5000
+     -q      Number requests stored in the queue.                                100
      -w      Allowed time to reserve an open channel for request that did not    10
              started. From 1 to 20 seconds.
-     -db     Maximum number of dynamically running MS VFP DBMS instances.        50
+     -db     Maximum number of dynamically running MS VFP DBMS instances.        30
              Extending scripts to run VFP - prg. Processes are started as
              needed by simultaneous client requests to the set value. Maximum
              value is 1000.
@@ -64,7 +64,7 @@ Parameters:                                                                  Def
 ### Общие сведения
 Корневая папка для доменов (по умолчанию www) должна содержать папки, соответствующие доменному имени и поддомену запрашиваемого ресурса. Если запрос выглядит как http://a.kornienko.ru или https://a.kornienko.ru, то в корневой папке для доменов должна быть папка с именем a.kornienko.ru, например: D:/work/www/a.kornienko.ru. Если вам нужно, чтобы эта же папка открывалась по другому адресу, то вы должны на эту папку создать соответствующую символическую ссылку, чтобы одна папка была доступна по двум разным путям. Для этого воспользуйтесь командой Windows mklink с ключем /d.  
 
-Число потоков не следут задавать максимально возможным. По умолчанию — 500. Наблюдайте за журналом, в последнем числовом поле в каждой записи отображен номер работающего потока. Со временем вы поймете какое число одновременных потоков у вас используется. Вероятно это значение значительно меньше 500.  
+Число потоков не следут задавать максимально возможным. По умолчанию — 300. Наблюдайте за журналом, в последнем числовом поле в каждой записи отображен номер работающего потока. Со временем вы поймете какое число одновременных потоков у вас используется. Вероятно это значение значительно меньше 300.  
 
 Предусмотрена обработка wsf-скриптов с помощью обработчика cscript.exe. В параметрах http и/или https сервера вы можете заменить это расширение скрипта и обработчик на любое другое, которому вы по тем или иным причинам отдаете предпочтение — на популярный php или на современный "dotnet fsi", выполняющий скрипты с расширением fsx, написанные на F#. Тем не менее Microsoft по настоящее время поддерживает WSH как в 32-х битной, так и в 64-х битной версиях.  
 
@@ -208,4 +208,5 @@ If there is an error in the prg file:
 3.2.5. March 2025. The client connection time limit is set according to the -w command line parameter.  
 3.2.6. March 2025. Fixed bugs in versions 3.2.4 and 3.2.5.  
 3.2.7. March 2025. The capacity of the simophore has been reduced by 1 to fix a stack zeroing bug during a DoS-attack.  
-3.3.0. March 2025. The capacity of the simophore has been reduced by 2 to fix a stack zeroing bug during a DoS-attack.  
+3.3.0. April 2025. The capacity of the simophore has been reduced by 2 to fix a stack zeroing bug during a DoS-attack.  
+3.3.1. April 2025. Changed default values. Handles stack zeroing exception during DoS-attacks.  
