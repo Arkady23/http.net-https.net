@@ -116,7 +116,7 @@ If there is an error in the prg file:
 Для безотказной работы MS VFP был разработан COM-сервер [VFP.memlib](https://github.com/Arkady23/VFP.memlib), который создает потоки ввода-вывода в отдельныой области памяти.
 ##### Очистка VFP/VFPA после окончания работы prg скрипта
 После окончания работы prg скрипта серверы http/https.net выполняют комады:
-```
+```xBase
   STD_IO.CloseAll();
   clos data all
   clea even
