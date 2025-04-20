@@ -211,3 +211,4 @@ If there is an error in the prg file:
 3.3.0. April 2025. The capacity of the simophore has been reduced by 2 to fix a stack zeroing bug during a DoS-attack.  
 3.3.1. April 2025. Changed default values. Handles stack zeroing exception during DoS-attacks.  
 3.3.2. April 2025. Added connection reset in case of DoS-attack.  
+1.3.3. April 2025. Added additional control over DoS-attack. Only for https.  
