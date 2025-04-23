@@ -212,3 +212,4 @@ If there is an error in the prg file:
 3.3.1. April 2025. Changed default values. Handles stack zeroing exception during DoS-attacks.  
 3.3.2. April 2025. Added connection reset in case of DoS-attack.  
 3.3.3. April 2025. Added additional control over DoS-attack (only for https). The blocked IP is marked in the log as "--".  
+3.3.4. April 2025. Reduced the threshold for blocking DoS-attacks.  
