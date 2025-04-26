@@ -1,8 +1,8 @@
 # http.net and https.net
 Multithreaded http.net and https.net C# servers using the dotNet v4 framework included in Windows 10/11 by default.  
 Многопоточный http.net и https.net серверы на C# с использованием фреймворка dotNet v4, входящего в Windows 10/11 по умолчанию.
-| News. В версиях начиная с 3.4/1.4 будет поддкрживаться толко быстрый CGI. За счет этого интерпритатор скриптов не будет запускаться каждый раз перед выполнением каждого скрипта. Интерпритатор будет запущен только в начале работы сервера. Далее работу по обслуживанию запросов будет выполнять скрипт quickCGI. Пример такого скрипта на языке Python приведен в папке репозитория NET4/www/quickcgi.py. |
-|-|
+| News.<br> В версиях начиная с 3.4/1.4 будет поддкрживаться толко быстрый CGI. За счет этого интерпритатор скриптов не будет запускаться каждый раз перед выполнением каждого скрипта. Интерпритатор будет запущен только в начале работы сервера. Далее работу по обслуживанию запросов будет выполнять скрипт quickCGI. Пример такого скрипта на языке Python приведен в папке репозитория NET4/www/quickcgi.py. |
+|:-|
 ### General information
 The root folder for domains (www by default) should contain folders corresponding to the domain name and subdomain of the requested resource. If the request looks like http://a.kornienko.ru or https://a.kornienko.ru, then the root folder for domains should contain a folder named a.kornienko.ru, for example: D:/work/www/a.kornienko.ru. If you need the folder to open at a different address, you should create a corresponding symbolic link to the same folder so that one folder is available at two different paths. To do this, use the Windows mklink command with the /d key.  
 
