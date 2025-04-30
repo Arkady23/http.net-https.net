@@ -2,7 +2,7 @@
 Multithreaded http.net and https.net C# servers using the dotNet v4 framework included in Windows 10/11 by default.  
 Многопоточный http.net и https.net серверы на C# с использованием фреймворка dotNet v4, входящего в Windows 10/11 по умолчанию.
 > [!NOTE]
-> В версиях начиная с 3.4/1.4 будет поддерживаться только быстрый CGI. Интерпретатор скриптов будет запускаться не в момент поступления запроса от клиента, а после отправки ответа. Это достигается с помощью простого начального скрипта, который может быть реализовон на большинстве современных интерпретируемых языках. Пример такого скрипта на языке Python initcgi.py приведен в папке репозитория NET4/www/. Это не относится к скриптам prg, у которых роль initCGI выполняет COM-сервер VisualFoxPro.Application.
+> В версиях начиная с 3.3.5/1.3.5 будет поддерживаться только быстрый CGI. Интерпретатор скриптов будет запускаться не в момент поступления запроса от клиента, а после отправки ответа. Это достигается с помощью простого начального скрипта, который может быть реализовон на большинстве современных интерпретируемых языках. Пример такого скрипта на языке Python initcgi.py приведен в папке репозитория NET4/www/. Это не относится к скриптам prg, у которых роль initCGI выполняет COM-сервер VisualFoxPro.Application.
 ### General information
 The root folder for domains (www by default) should contain folders corresponding to the domain name and subdomain of the requested resource. If the request looks like http://a.kornienko.ru or https://a.kornienko.ru, then the root folder for domains should contain a folder named a.kornienko.ru, for example: D:/work/www/a.kornienko.ru. If you need the folder to open at a different address, you should create a corresponding symbolic link to the same folder so that one folder is available at two different paths. To do this, use the Windows mklink command with the /d key.  
 
@@ -13,7 +13,7 @@ WSF scripts can be processed using the cscript.exe handler. In the http and/or h
 Servers also provides processing of prg scripts via COM technology with VFP 9/10(Advanced) DBMS, not CGI. COM objects are created as requests from simultaneously accessing clients are made to the maximum value specified in the server parameters. By default, the visual error output of the VFP 9/10(Advanced) DBMS is disabled. In case of an error in the prg, the description of this error is returned to the script in the ERROR_MESS variable. Below is an example of a prg file and the result of its work. And also the result of a similar prg file, but with an error (the last line break ";" is missing).
 ```PowerShell
 PS D:\> D:\work\httpd\http.net.exe /?
-Multithreaded http.net server version 3.3.3, (C) a.kornienko.ru April 2025.
+Multithreaded http.net server version 3.3.5, (C) a.kornienko.ru April 2025.
 
 USAGE:
     http.net [Parameter1 Value1] [Parameter2 Value2] ...
@@ -37,10 +37,9 @@ Parameters:                                                                  Def
      -q      Number requests stored in the queue.                                100
      -w      Allowed time to reserve an open channel for request that did not    10
              started. From 1 to 20 seconds.
-     -db     Maximum number of dynamically running MS VFP DBMS instances.        30
-             Extending scripts to run VFP - prg. Processes are started as
-             needed by simultaneous client requests to the set value. Maximum
-             value is 1000.
+     -n      Maximum number of dynamically running interpreters or MS VFP        30
+             instances. Processes are launched as needed depending on the
+             number of concurrent requests. Maximum value is 1000.
      -log    Size of the query log in rows. The log consists of two              10000
              interleaved versions http.net.x.log and http.net.y.log. If the
              size is set to less than 80, then the log is not kept.
@@ -54,14 +53,10 @@ Parameters:                                                                  Def
              in a file. This feature can be used to transfer files to the
              server. In this case, the file name will be in the environment
              variable POST_FILENAME.
-     -proc   Script handler used. If necessary, you must also include            cscript.exe
-             the full path to the executable file. By default, the component
-             built into Microsoft Windows OS is used, a very fast script
-             server handler (WSH) using the JScript and VBScript languages.
-     -args   Additional parameters of the handler startup command line. When
-             using cscript.exe if no additional parameters are specified,
-             the //Nologo parameter is used.
-     -ext    Extension of the script files.                                      wsf
+     -proc   Script handler used. If necessary, you must also include            python.exe
+             the full path to the executable file.
+     -args   Additional parameters of the handler startup command line.
+     -ext    Extension of the script files.                                      py
 ```
 ### Общие сведения
 Корневая папка для доменов (по умолчанию www) должна содержать папки, соответствующие доменному имени и поддомену запрашиваемого ресурса. Если запрос выглядит как http://a.kornienko.ru или https://a.kornienko.ru, то в корневой папке для доменов должна быть папка с именем a.kornienko.ru, например: D:/work/www/a.kornienko.ru. Если вам нужно, чтобы эта же папка открывалась по другому адресу, то вы должны на эту папку создать соответствующую символическую ссылку, чтобы одна папка была доступна по двум разным путям. Для этого воспользуйтесь командой Windows mklink с ключем /d.  
@@ -215,3 +210,4 @@ If there is an error in the prg file:
 3.3.2. April 2025. Added connection reset in case of DoS-attack.  
 3.3.3. April 2025. Added additional control over DoS-attack (only for https). The blocked IP is marked in the log as "--".  
 3.3.4. April 2025. Reduced the threshold for blocking DoS-attacks.  
+3.3.5. April 2025. Replaced default script handler with Python. Switched to initCGI protocol.  
