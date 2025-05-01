@@ -1,7 +1,7 @@
 # http.net and https.net
-Multithreaded http.net and https.net servers in C# with Visual Foxpro on COM and with Python on fast CGI by default, with protection from DoS-attacks.  
+Multithreaded http.net and https.net servers with Visual Foxpro on COM and with Python on fast CGI by default, with protection from DoS-attacks.  
 
-Многопоточные http.net и https.net серверы на C# с Visual Foxpro на COM и с Python на быстром CGI по умолчанию, с защитой от DoS-атак.
+Многопоточные http.net и https.net серверы с Visual Foxpro на COM и с Python на быстром CGI по умолчанию, с защитой от DoS-атак.
 ### General information
 The root folder for domains (www by default) should contain folders corresponding to the domain name and subdomain of the requested resource. If the request looks like http://a.kornienko.ru or https://a.kornienko.ru, then the root folder for domains should contain a folder named a.kornienko.ru, for example: D:/work/www/a.kornienko.ru. If you need the folder to open at a different address, you should create a corresponding symbolic link to the same folder so that one folder is available at two different paths. To do this, use the Windows mklink command with the /d key.  
 
