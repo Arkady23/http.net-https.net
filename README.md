@@ -80,11 +80,11 @@ sys.stdout.write("Content-Type: text/html; charset='utf-8'\n\n")
 
 sys.stdout.write("<h1>Привет мир из Python!</h1>\n" + \
    "<h3>Переменные окружения:</h3>\n" + \
-   "SERVER_PROTOCOL=" + os.getenv("SERVER_PROTOCOL") + ";<br>\n" + \
-   "SCRIPT_FILENAME=" + os.getenv("SCRIPT_FILENAME") + ";<br>\n" + \
-   "POST_FILENAME=" + os.getenv("POST_FILENAME") + ";<br>\n" + \
-   "QUERY_STRING=" + os.getenv("QUERY_STRING") + ";<br>\n" + \
-   "REMOTE_ADDR=" + os.getenv("REMOTE_ADDR") + ";<br>\n" + \
+   "SERVER_PROTOCOL=" + os.environ["SERVER_PROTOCOL"] + ";<br>\n" + \
+   "SCRIPT_FILENAME=" + os.environ["SCRIPT_FILENAME"] + ";<br>\n" + \
+   "POST_FILENAME=" + os.environ["POST_FILENAME"] + ";<br>\n" + \
+   "QUERY_STRING=" + os.environ["QUERY_STRING"] + ";<br>\n" + \
+   "REMOTE_ADDR=" + os.environ["REMOTE_ADDR"] + ";<br>\n" + \
    "Cookie=" + os.getenv("Cookie","") + ";<br>\n" + \
    "STD_INPUT=" + sys.stdin.read() + ".")
 
