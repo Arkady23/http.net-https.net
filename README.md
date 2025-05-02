@@ -14,7 +14,7 @@ By default, http and https servers will process scripts in Visual Foxpro and Pyt
 Prg scripts are processed using COM technology and VFP 9/10(Advanced) DBMS, not CGI. COM objects are created as requests from clients are executed. By default, visual error output in VFP 9/10(Advanced) DBMS is disabled. In case of an error in prg, a description of this error is returned to the script in the ERROR_MESS variable. Below is an example of a prg file and the result of its work. And also the result of working with a similar prg file, but with an error (the last line break ";" is missing).
 ```PowerShell
 PS D:\> D:\work\httpd\http.net.exe /?
-Multithreaded http.net server version 3.3.5, (C) a.kornienko.ru April 2025.
+Multithreaded http.net server version 3.4.0, (C) a.kornienko.ru May 2025.
 
 USAGE:
     http.net [Parameter1 Value1] [Parameter2 Value2] ...
@@ -242,3 +242,4 @@ If there is an error in the prg file:
 3.3.3. April 2025. Added additional control over DoS-attack (only for https). The blocked IP is marked in the log as "--".  
 3.3.4. April 2025. Reduced the threshold for blocking DoS-attacks.  
 3.3.5. April 2025. Replaced default script handler with Python. Switched to fast start initCGI protocol.  
+3.4.0. May 2025. The HTTP_HEADERS environment variable has been removed, and added environment variables for each header in the request with names matching the names of these headers.  
