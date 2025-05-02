@@ -72,30 +72,33 @@ Parameters:                                                                  Def
 ### Пример prg скрипта
 ```xBase
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-*  Тест. Вывод переменных окружения.                   версия 10.02.2025  *
+*  Тест. Вывод переменных окружения.                   версия 02.05.2025  *
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   CRLF = chr(13) + chr(10)
   STD_INPUT = Strconv(STD_IO.ReadToEnd(),11)
 
 * P.S. До этого присвоения информация из STD_IO, находящаяся в качестве
 * стандартного ввода, должна быть прочитана:
-  STD_IO.Write('Content-Type: text/html; charset="utf-8"' + CRLF + CRLF)
+  STD_IO.Write('Content-Type: text/html; charset="windows-1251"' + CRLF + CRLF)
 * Параметр charset="utf-8" указан исключительно для обозревателя интернет, т.к.
 * не все обозреватели отображают страницы в кодировке по умолчанию UTF-8, несмотря
 * на то, что эта кодировка является кодировкой по умолчанию в стандартах html.
 
   STD_IO.Write("<h1>Привет мир из MS VFP!</h1>" + ;
      "<h3>Переменные окружения:</h3>" + ;
+     "SERVER_PROTOCOL=" + SERVER_PROTOCOL + ";<br>" + CRLF + ;
      "SCRIPT_FILENAME=" + SCRIPT_FILENAME + ";<br>" + CRLF + ;
+     "POST_FILENAME=" + POST_FILENAME + ";<br>" + CRLF +;
      "QUERY_STRING=" + QUERY_STRING + ";<br>" + CRLF + ;
-     "HTTP_COOKIE=" + STRE(HTTP_HEADERS,"Cookie:",CRLF) + ";<br>" + CRLF + ;
      "REMOTE_ADDR=" + REMOTE_ADDR + ";<br>" + CRLF + ;
-     "STD_INPUT=" + STD_INPUT + ";<br>" + CRLF + ;
-     "POST_FILENAME=" + POST_FILENAME + ";<br>" + CRLF)
+     "Cookie=" + iif(Type('Cookie')="C",Cookie,"") + ;
+                 ";<br>" + CRLF + ;
+     "STD_INPUT=" + STD_INPUT + ";<br>" + CRLF)
+
   STD_IO.Write("ERROR_MESS=" + ERROR_MESS)
 
-* P.S. Также при необходимости, если работают оба сервера (http.net и
-* https.net) можно использовать переменную окружения m.SERVER_PROTOCOL.
+* P.S. Также могут быть доступны и многие другие переменные окружения.
+* Перед использованием таких переменных следуеи проверять их наличие.
 ```
 The visual result of the prg script:
 ![The visual result of the prg script](screenShots/2024-03-21.png)
