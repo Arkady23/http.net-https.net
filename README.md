@@ -98,7 +98,7 @@ Parameters:                                                                  Def
   STD_IO.Write("ERROR_MESS=" + ERROR_MESS)
 
 * P.S. Также могут быть доступны и многие другие переменные окружения.
-* Перед использованием таких переменных следуеи проверять их наличие.
+* Перед использованием таких переменных следует проверять их наличие.
 ```
 The visual result of the prg script:
 ![The visual result of the prg script](screenShots/2024-03-21.png)
