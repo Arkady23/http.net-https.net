@@ -57,7 +57,7 @@ Parameters:                                                                  Def
      -proc   Script handler used. If necessary, you must also include            python.exe
              the full path to the executable file.
      -args   Additional parameters of the handler startup command line.
-     -ext    Extension of the script files.                                      py
+     -ext    Extension of the script files.                                      pyc
 ```
 ### Общие сведения
 Корневая папка для доменов (по умолчанию www) должна содержать папки, соответствующие доменному имени и поддомену запрашиваемого ресурса. Если запрос выглядит как http://a.kornienko.ru или https://a.kornienko.ru, то в корневой папке для доменов должна быть папка с именем a.kornienko.ru, например: D:/work/www/a.kornienko.ru. Если вам нужно, чтобы эта же папка открывалась по другому адресу, то вы должны на эту папку создать соответствующую символическую ссылку, чтобы одна папка была доступна по двум разным путям. Для этого воспользуйтесь командой Windows mklink с ключем /d.  
