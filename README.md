@@ -72,7 +72,7 @@ Parameters:                                                                  Def
 ### Пример Python скрипта test.py
 ```Python
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# Тест. Вывод переменных окружения.                   02.05.2025  #
+# Тест. Вывод переменных окружения.                   03.05.2025  #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 import os, sys
 
@@ -80,11 +80,13 @@ sys.stdout.write("Content-Type: text/html; charset='utf-8'\n\n")
 
 sys.stdout.write("<h1>Привет мир из Python!</h1>\n" + \
    "<h3>Переменные окружения:</h3>\n" + \
+   "Accept-Language=" + os.getenv("Accept-Language","") + ";<br>\n" + \
    "SERVER_PROTOCOL=" + os.environ["SERVER_PROTOCOL"] + ";<br>\n" + \
    "SCRIPT_FILENAME=" + os.environ["SCRIPT_FILENAME"] + ";<br>\n" + \
    "POST_FILENAME=" + os.environ["POST_FILENAME"] + ";<br>\n" + \
    "QUERY_STRING=" + os.environ["QUERY_STRING"] + ";<br>\n" + \
    "REMOTE_ADDR=" + os.environ["REMOTE_ADDR"] + ";<br>\n" + \
+   "User-Agent=" + os.getenv("User-Agent","") + ";<br>\n" + \
    "Cookie=" + os.getenv("Cookie","") + ";<br>\n" + \
    "STD_INPUT=" + sys.stdin.read() + ".")
 
@@ -110,11 +112,15 @@ sys.stdout.write("<h1>Привет мир из Python!</h1>\n" + \
 
   STD_IO.Write("<h1>Привет мир из MS VFP!</h1>" + ;
      "<h3>Переменные окружения:</h3>" + ;
+     "_Accept_Language_=" + iif(Type('_Accept_Language_')="C", ;
+                      _Accept_Language_,"") + ";<br>" + CRLF + ;
      "SERVER_PROTOCOL=" + SERVER_PROTOCOL + ";<br>" + CRLF + ;
      "SCRIPT_FILENAME=" + SCRIPT_FILENAME + ";<br>" + CRLF + ;
      "POST_FILENAME=" + POST_FILENAME + ";<br>" + CRLF +;
      "QUERY_STRING=" + QUERY_STRING + ";<br>" + CRLF + ;
      "REMOTE_ADDR=" + REMOTE_ADDR + ";<br>" + CRLF + ;
+     "_User_Agent_=" + iif(Type('_User_Agent_')="C", ;
+                 _User_Agent_,"") + ";<br>" + CRLF + ;
      "_Cookie_=" + iif(Type('_Cookie_')="C",  ;
              _Cookie_,"") + ";<br>" + CRLF +  ;
      "STD_INPUT=" + STD_INPUT + ";<br>" + CRLF)
