@@ -110,7 +110,7 @@ sys.stdout.write("<h1>Привет мир из Python!</h1>\n" + \
 * Параметр charset="windows-1251" означает, что кодировка передаваемого
 * текста - "windows-1251".
 
-  STD_IO.Write("<h1>Привет мир из MS VFP!</h1>" + ;
+  STD_IO.Write("<h1>Привет мир из Visual FoxPro!</h1>" + ;
      "<h3>Переменные окружения:</h3>" + ;
      "_Accept_Language_=" + iif(Type('_Accept_Language_')="C", ;
                       _Accept_Language_,"") + ";<br>" + CRLF + ;
