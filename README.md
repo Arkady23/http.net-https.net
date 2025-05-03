@@ -134,7 +134,7 @@ sys.stdout.write("<h1>Привет мир из Python!</h1>\n" + \
 * названиям заголовков в поступившем запросе.
 ```
 The visual result of the prg script:
-![The visual result of the prg script](screenShots/2024-03-21.png)
+![The visual result of the prg script](screenShots/2025-05-04.png)
 
 If there is an error in the prg file:
 ![If there is an error in the prg file](screenShots/if-error-in-prg-file.png)
