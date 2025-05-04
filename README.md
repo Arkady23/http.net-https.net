@@ -96,6 +96,7 @@ sys.stdout.write("<h1>Привет мир из Python!</h1>\n" + \
 # наличие. Названия прочих переменных окружения совпадают с
 # названиями заголовков в поступившем запросе.
 ```
+Пример онлайн https://a.kornienko.ru/test.pyc?lkdlkdlkdlkdlkd
 ### Пример Visual Foxpro скрипта test.prg
 ```xBase
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -133,6 +134,8 @@ sys.stdout.write("<h1>Привет мир из Python!</h1>\n" + \
 * наличие. Названия прочих переменных окружения соответстуют
 * названиям заголовков в поступившем запросе.
 ```
+Пример онлайн https://a.kornienko.ru/test.prg?lkdlkdlkdlkdlkd  
+
 The visual result of the prg script:
 ![The visual result of the prg script](screenShots/2025-05-04.png)
 
