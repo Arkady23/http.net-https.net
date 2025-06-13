@@ -254,4 +254,4 @@ If there is an error in the prg file:
 3.4.0. May 2025. The HTTP_HEADERS environment variable has been removed, and added environment variables for each header in the request with names matching the names of these headers.  
 3.4.1. May 2025. Tightened blocking against DoS-attacks.  
 3.4.2. May 2025. The blocking against DoS-attacks has been softened so that decent clients are not blocked. The number of simultaneous requests from one client has been increased to 100.  
-3.5.0. June 2025. The threshold for DoS attacks has been slightly weakened. Failed connections are no longer recorded in the log.  
+3.5.0. June 2025. The threshold for DoS-attacks has been slightly weakened. Failed connections are no longer recorded in the log.  
