@@ -146,11 +146,11 @@ If there is an error in the prg file:
 #### Классические обработчики
 Существуют весьма разнообразные обработчики (интерпритаторы). Среди них могут быть такие, которые не поддерживают многобыйтовые строки в UTF-8 кодировке. Серверы http/https.net передают POST данные как есть, и если требуется перекодировка данных, то это должны выполнять сами скрипты.
 #### Обработчик VFP/VFPA
-Для prg скриптов в качастве стандартного ввода-вывода для VFP серверы формируют объект STD_IO, который создается в COM-сервере VFP.memlib. Обычно входящий поток поступает в кодировке UTF-8. Поэтому prg скрипт должен конвертировать эти данные, находящиеся в COM-объекте STD_IO, в свою внутреннюю системную кодировку. В VFP/VFPA для этого есть удобная функция Strconv(). Чтобы конвертировать весь входящий поток POST из UTF-8 используется обращение `STD_INPUT=Strconv(STD_IO.ReadToEnd(),11)`. Если у вас в данных POST не ожидаются буквы национальных алфавитов, а только цифры, буквы английского алфавита и стандартные знаки, то конвертировать входящий поток не обязательно.  
+Для prg скриптов в качастве стандартного ввода-вывода для VFP серверы формируют объект STD_IO, который создается в COM-сервере VFP.memlib32/VFP.memlib. Обычно входящий поток поступает в кодировке UTF-8. Поэтому prg скрипт должен конвертировать эти данные, находящиеся в COM-объекте STD_IO, в свою внутреннюю системную кодировку. В VFP/VFPA для этого есть удобная функция Strconv(). Чтобы конвертировать весь входящий поток POST из UTF-8 используется обращение `STD_INPUT=Strconv(STD_IO.ReadToEnd(),11)`. Если у вас в данных POST не ожидаются буквы национальных алфавитов, а только цифры, буквы английского алфавита и стандартные знаки, то конвертировать входящий поток не обязательно.  
 
 В VFP/VFPA со временем происходит утечка памяти. Поэтому очень важно по окончании работы prg делать очистку всех переменных и объектов.  
 
-Для безотказной работы MS VFP был разработан COM-сервер [VFP.memlib](https://github.com/Arkady23/VFP.memlib), который создает потоки ввода-вывода в отдельныой области памяти.
+Для безотказной работы MS VFP был разработан COM-сервер [VFP.memlib32/VFP.memlib](https://github.com/Arkady23/VFP.memlib), который создает потоки ввода-вывода в отдельныой области памяти.
 ##### Очистка VFP/VFPA после окончания работы prg скрипта
 После окончания работы prg скрипта серверы http/https.net выполняют комады:
 ```xBase
@@ -255,4 +255,4 @@ If there is an error in the prg file:
 3.4.1. May 2025. Tightened blocking against DoS-attacks.  
 3.4.2. May 2025. The blocking against DoS-attacks has been softened so that decent clients are not blocked. The number of simultaneous requests from one client has been increased to 100.  
 3.5.0. June 2025. The threshold for DoS-attacks has been slightly weakened. Failed connections are no longer recorded in the log.  
-3.6.0. November 2025. Fixed COM memlib32 loading error when using VFP9. The visual form with parameters is now hidden while the server is running.  
+3.6.0. November 2025. Fixed COM VFP.memlib32 loading error when using VFP9. The visual form with parameters is now hidden while the server is running.  
