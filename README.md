@@ -14,11 +14,12 @@ By default, http and https servers will process scripts in Visual Foxpro and Pyt
 Prg scripts are processed using COM technology and VFP 9/10(Advanced) DBMS, not CGI. COM objects are created as requests from clients are executed. By default, visual error output in VFP 9/10(Advanced) DBMS is disabled. In case of an error in prg, a description of this error is returned to the script in the ERROR_MESS variable. Below is an example of a prg file and the result of its work. And also the result of working with a similar prg file, but with an error (the last line break ";" is missing).
 ```PowerShell
 PS D:\> D:\work\httpd\http.net.exe /?
-Multithreaded http.net server version 3.6.0, (C) a.kornienko.ru November 2025.
+Multithreaded http.net server version 3.7.0, (C) a.kornienko.ru December 2025.
 
 USAGE:
     http.net [Parameter1 Value1] [Parameter2 Value2] ...
-    http.net @filename
+    http.net /regserver               Starting the server when the computer is turned on.
+    http.net /unregserver             Deleting the server startup task.
 
     If necessary, Parameter and Value pairs are specified. If the value is text and contains
     spaces, then it must be enclosed in quotation marks. You can specify @filename which
