@@ -22,8 +22,8 @@ USAGE:
     http.net /unregserver             Deleting the server startup task.
 
     If necessary, Parameter and Value pairs are specified. If the value is text and contains
-    spaces, then it must be enclosed in quotation marks. You can specify @filename which
-    contains the entire line with parameters.
+    spaces, then it must be enclosed in quotation marks. You can also specify the parameter
+    string in the xml file in the <Arguments></Arguments> section.
 
 Parameters:                                                                  Default values:
      -d      Folder containing the domains.                                      ../www/
