@@ -1,7 +1,7 @@
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!                                                         !!
 //!!    https.net сервер на C#.      Автор: A.Б.Корниенко    !!
-//!!    class Session                версия от 13.06.2025    !!
+//!!    class Session                версия от 19.12.2025    !!
 //!!                                                         !!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -42,7 +42,7 @@ namespace https2 {
 
     public Session(int j) {
       jt = (j).ToString();
-      dirname=filename= "";
+      dirname=filename= string.Empty;
       this.Init();
       this.j = j;
     }
@@ -52,7 +52,7 @@ namespace https2 {
       // Подготовка переменных по максимуму
       if(filename.Length>0) {
         if(Directory.Exists(dirname)) Directory.Delete(dirname,true);
-        dirname=filename= "";
+        dirname=filename= string.Empty;
       }
 
       // Если клиентов много, то сбрасываем счетчики DoS-атак, только если другой IP.
@@ -69,7 +69,7 @@ namespace https2 {
         Interlocked.Exchange(ref f.iIP1,0);
       }
 
-      head=h1=res=reso=Host=Content_T=Content_Type=Content_Disposition=QUERY_STRING="";
+      head=h1=res=reso=Host=Content_T=Content_Type=Content_Disposition=QUERY_STRING=string.Empty;
       UTF = Encoding.GetEncoding(f.UTF8);
       eof = len = i2 = Content_Length = 0;
       k = k1 = n1 = f.bu1;                  // Смещение для чтения 1-ой части заголовков
@@ -213,7 +213,7 @@ namespace https2 {
     }
 
     string line1() {
-      string z = "";
+      string z = string.Empty;
       if(len>0) {
         i = Array.IndexOf(buf,f.b10,k,len);
         if(i >= 0) {
@@ -644,7 +644,7 @@ namespace https2 {
       } else {
 
         try {
-          f.vfp[m].SetVar("ERROR_MESS","");
+          f.vfp[m].SetVar("ERROR_MESS",string.Empty);
         } catch(System.Runtime.InteropServices.COMException) {
           f.start_VFP(m);
         }

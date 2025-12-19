@@ -1,7 +1,7 @@
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!                                                     !!
 //!!   https.net сервер на C#.    Автор: A.Б.Корниенко   !!
-//!!   Головной блок              версия от 06.11.2025   !!
+//!!   Головной блок              версия от 19.12.2025   !!
 //!!                                                     !!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -37,24 +37,26 @@ public class f : Form {
     Thread tSer;
     Server ser;
 
-    private const string hs="https.net server";
+    private const string hn="https.net";
+    private const string hs=hn+" server";
     public const string CL="Content-Length",CT="Content-Type",CD="Content-Disposition",
                  CC="Cache-Control: public, max-age=2300000\r\n", OK=H1+"200 OK\r\n",
                  H1="HTTP/1.1 ",UTF8="UTF-8",CLR="sys(2004)+'VFPclear.prg'",DI="index.html",
-                 Protocol="https", logX="https.net.x.log", logY="https.net.y.log",
+                 Protocol="https", logX=hn+".x.log", logY=hn+".y.log",
                  CT_T=CT+": text/plain\r\n", stopIconText= hs+" is stopped",
                  initCGI= "initcgi.",
            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                 ver="version 1.6.0", verD="November 2025";   //!!
+                 ver="version 1.7.0", verD="December 2025";   //!!
            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public const  int i2=2, i9=2147483647;
     public const  byte b0=0, b1=1, b2=2, b10=10, b13=13;
     public static int i, k, port, post, st, qu, bu, bu0, bu1, bu2, bu3, bu4, bu8, db, log9,
                   st1, tw, iIP, iIP1, nClients, s9=1000, logi=0;
     public static string IP, IP1, DocumentRoot, Folder=Thread.GetDomain().BaseDirectory,
-                  DirectoryIndex, Proc, Args, Ext, logZ="", DirectorySessions;
-    public static Icon ico = Icon.ExtractAssociatedIcon(Folder+"https.net.exe");
+                  DirectoryIndex, Proc, Args, Ext, logZ=string.Empty, DirectorySessions;
+    public static string Fullexe = Folder+hn+".exe";
     public static bool notExit=false, notQuit=true, cgia, VFP9, VFPclr;
+    public static Icon ico = Icon.ExtractAssociatedIcon(Fullexe);
     public static Encoding vfpw = Encoding.GetEncoding(1251); // подходит для двоичных данных
     public static X509Certificate2 cert = null;
     public static StreamWriter logSW = null;
@@ -72,6 +74,18 @@ public class f : Form {
       if( disposing )
           if (conta != null) conta.Dispose();            
       base.Dispose( disposing );
+    }
+
+    void nIcon_BalloonTipClosed(object Sender, EventArgs e) {
+
+      // Отображались ошибки в параметрах запуска
+      this.Close();
+    }
+
+    void nIcon_BalloonTipClicked(object Sender, EventArgs e) {
+
+      // Отображались ошибки в параметрах запуска
+      this.Close();
     }
 
     void nIcon_DoubleClick(object Sender, EventArgs e) {
@@ -162,6 +176,10 @@ public class f : Form {
       nIcon.Text = hs+" is starting...";
       nIcon.Visible = true;
 
+      // Событие закрытия уведомления
+      nIcon.BalloonTipClosed += new EventHandler(nIcon_BalloonTipClosed);
+      nIcon.BalloonTipClicked += new EventHandler(nIcon_BalloonTipClicked);
+
       // Handle the DoubleClick event to activate the form.
       nIcon.DoubleClick += new EventHandler(this.nIcon_DoubleClick);
 
@@ -201,10 +219,11 @@ public class f : Form {
 
       // Установить значения сервера по умолчанию
       DirectorySessions="Sessions";
-      CerFile="a.kornienko.ru.pfx";
+      CerFile="kornienko.ru.pfx";
       DocumentRoot="../www/";
       Proc="python.exe";
       DirectoryIndex=DI;
+      Args=string.Empty;
       post=33554432;
       iIP=iIP1=0;
       IP=IP1="-";
@@ -213,61 +232,61 @@ public class f : Form {
       bu=131072;
       Ext="pyc";
       tw=10000;
-      Args="";
       qu=100;
       st=300;
       db=30;
 
       if(getArgs(args)){
-        if(Args.Length>0) Args+=" ";
+        if(notQuit) {
+          if(Args.Length>0) Args+=" ";
 
-        // Создать объект cert
-        if(!File.Exists(CerFile)) {
-          CerFile=DocumentRoot+CerFile;
-          if(!File.Exists(CerFile)) CerFile="";
-        }
-        if(CerFile=="") {
-          log2("\tThe "+hs+" cannot work. Certificate was not found :(");
-          notExit=true;
-        } else {
-          try {
-            cert = new X509Certificate2(CerFile);
-          } catch(Exception) {
-            log2("The "+hs+" cannot work. Certificate error :((");
-            cert = null;
+          // Создать объект cert
+          if(!File.Exists(CerFile)) {
+            CerFile=DocumentRoot+CerFile;
+            if(!File.Exists(CerFile)) CerFile=string.Empty;
           }
-          if(cert!=null) notExit=true;
+          if(CerFile==string.Empty) {
+            log2("\tThe "+hs+" cannot work. Certificate was not found :(");
+            notExit=true;
+          } else {
+            try {
+              cert = new X509Certificate2(CerFile);
+            } catch(Exception) {
+              log2("The "+hs+" cannot work. Certificate error :((");
+              cert = null;
+            }
+            if(cert!=null) notExit=true;
+          }
+
+          // Создать стек индексов клиентов с симофорным контролем максимального значения
+          maxNumberAcceptedClients = new Semaphore(st-2,st-2);
+          freeClientsPool = new Stack<int>(st);
+          // Заполнить стек клиентов индексами
+          for (i=0; i<st; i++) freeClientsPool.Push(i);
+
+          // Разделить буфер для ускорения чтения
+          bu4 = bu/4;
+          bu1 = bu-3*bu4;
+          bu2 = bu1+bu4;
+          bu3 = bu2+bu4;
+          bu8 = bu4+bu4;
+          bu0 = bu - 1;
+
+          st1 = st>133? 100 : st*3/4;   // Позволено запросов от одного IP
+          nClients = st;                // Начальное число соединений
+
+          // Создать объекты сессий предварительно очистив сессии от предыдущих запусков
+          session = null;
+          i = st<2? 4 : st;
+          ThreadPool.SetMinThreads(i,i);
+          session = new Session[st];
+          try{
+            Parallel.For(0,st,j => { session[j] = new Session(j); });
+            notExit=true;
+          }catch(Exception){
+            if(log9>0) log("\tThere were problems when creating threads. Try updating Windows.");
+          }
         }
-
-        // Создать стек индексов клиентов с симофорным контролем максимального значения
-        maxNumberAcceptedClients = new Semaphore(st-2,st-2);
-        freeClientsPool = new Stack<int>(st);
-        // Заполнить стек клиентов индексами
-        for (i=0; i<st; i++) freeClientsPool.Push(i);
-
-        // Разделить буфер для ускорения чтения
-        bu4 = bu/4;
-        bu1 = bu-3*bu4;
-        bu2 = bu1+bu4;
-        bu3 = bu2+bu4;
-        bu8 = bu4+bu4;
-        bu0 = bu - 1;
-
-        st1 = st>133? 100 : st*3/4;   // Позволено запросов от одного IP
-        nClients = st;                // Начальное число соединений
-
-        // Создать объекты сессий предварительно очистив сессии от предыдущих запусков
-        session = null;
-        i = st<2? 4 : st;
-        ThreadPool.SetMinThreads(i,i);
-        session = new Session[st];
-        try{
-          Parallel.For(0,st,j => { session[j] = new Session(j); });
-          notExit=true;
-        }catch(Exception){
-          if(log9>0) log("\tThere were problems when creating threads. Try updating Windows.");
-        }
-
         if(notExit) {
 
           // Запустить экземпляр CGI
@@ -394,13 +413,13 @@ public class f : Form {
     public static string beforStr1(ref string x, string Str){
       int k=0;
       if(Str.Length>0) k=x.IndexOf(Str);
-      return k<0?x:(k>0?x.Substring(0,k):"");
+      return k<0?x:(k>0?x.Substring(0,k):string.Empty);
     }
 
     public static string afterStr1(ref string x, string Str){
       if(Str.Length>0){
         int k=x.IndexOf(Str,StringComparison.OrdinalIgnoreCase);
-        return k<0?"":x.Substring(k+Str.Length);
+        return k<0?string.Empty:x.Substring(k+Str.Length);
       }else{
         return x;
       }
@@ -409,7 +428,7 @@ public class f : Form {
     public static string beforStr9(ref string x, string Str){
       if(Str.Length>0){
          int k=x.LastIndexOf(Str);
-         return k<0?x:(k>0?x.Substring(0,k):"");
+         return k<0?x:(k>0?x.Substring(0,k):string.Empty);
       }else{
          return x;
       }
@@ -418,12 +437,12 @@ public class f : Form {
     public static string afterStr9(ref string x, string Str){
       int k= -1;
       if(Str.Length>0) k=x.LastIndexOf(Str);
-      return k<0?"":x.Substring(k+Str.Length);
+      return k<0?string.Empty:x.Substring(k+Str.Length);
     }
 
     // Узнать значение поля в заголовке (может понадобиться при разборе заголовков)
     public static string valStr(ref string x, string Str){
-      string z="";
+      string z=string.Empty;
       if(x.Length>0){
         z=afterStr1(ref x," "+Str+"=");
         if(z.Length==0) z=afterStr1(ref x,";"+Str+"=");
@@ -491,6 +510,36 @@ public class f : Form {
       int z;
       try{ z=int.Parse(x); }catch(Exception){ z=i9; }
       return z;
+    }
+
+    // Выполнить команду "schtasks"
+    private bool schtasks(ref string par){
+      bool ret;
+      string output;
+      byte[] buf = new byte[100];
+      var ps = new ProcessStartInfo();
+      ps.FileName = "schtasks";
+      ps.CreateNoWindow = true;
+      ps.UseShellExecute = false;
+      //ps.RedirectStandardInput = true;
+      ps.RedirectStandardOutput = true;
+      ps.Arguments = par;
+      try {
+        Process p = Process.Start(ps);
+        //p.StandardInput.Close();
+        k = p.StandardOutput.BaseStream.Read(buf,0,100);
+        output = Encoding.GetEncoding(866).GetString(buf);
+        p.WaitForExit();
+        ret = true;
+      } catch(Exception) {
+        output = "FAILED :-(";
+        ret = false;
+      }
+      if(output.Length>2) {
+        nIcon.ShowBalloonTip(6100, "Schtasks command", output,
+              ret? ToolTipIcon.Info:ToolTipIcon.Error);
+      }
+      return ret;
     }
 
     // Запуск скрипта initCGI
@@ -569,33 +618,54 @@ public class f : Form {
     }
 
     int odd(string z) {
-      return (z.Length - z.Replace("'", "").Length)%2 +
-             (z.Length - z.Replace("\"", "").Length)%2;
+      return (z.Length - z.Replace("'", string.Empty).Length)%2 +
+             (z.Length - z.Replace("\"", string.Empty).Length)%2;
+    }
+
+    string toStd(string z) {
+      return z.Contains(" ")? "\""+z+"\"": z;
+    }
+
+    bool toArg(string[] args, ref string ta) {
+      i++;
+      if(i < args.Length){
+        ta += (i>1?" ":string.Empty)+args[i-1]+" "+toStd(args[i]);
+        return true;
+      }
+      return false;
     }
 
     private bool getArgs(String[] args){
       const int b9=131072, db9=1000, p9=65535, q9=2147483647, post9=33554432, b0=512,
                 log0=80, t9=20;
-      int i, k;
+      string tx=string.Empty, ta=string.Empty, ts=string.Empty, cA="Arguments>", fn=hn+".xml";
       bool l=true;
-      if(args.Length>0){
-        if((byte)args[0][0]==64){
-          string fn=args[0].Substring(1).Trim();
-          if(File.Exists(fn))
-             fn = File.ReadAllText(fn).Replace("\t", " ").Replace("\r",string.Empty).
-                    Replace("\n",string.Empty).Trim();
+      int i1= -1;
+
+      if(File.Exists(fn)) {
+        if(args.Length==0) {
+          tx = File.ReadAllText(fn);
+          k = tx.IndexOf("<"+cA,StringComparison.OrdinalIgnoreCase)+11;
+          tx = tx.Substring(k, tx.IndexOf("</"+cA,StringComparison.OrdinalIgnoreCase)-k).
+               Replace("\t", " ").Replace("\r"," ").Replace("\n"," ").Trim();
           k = 1;
-          while (k<fn.Length) {
-            i = fn.IndexOf(" ",k);
+          while (k<tx.Length) {
+            i = tx.IndexOf(" ",k);
             if(i<0) {
-              k = fn.Length;
+              k = tx.Length;
             } else {
-              if(odd(fn.Substring(k, i-k-1))==0) 
-                 fn = fn.Substring(0,i)+"\t"+fn.Substring(i+1);
+              if(odd(tx.Substring(k, i-k-1))==0) {
+                if((i-i1)>1) {
+                  tx = tx.Substring(0,i)+"\t"+tx.Substring(i+1);
+                } else {
+                  tx = tx.Substring(0,i)+tx.Substring(i+1);
+                  i--;
+                }
+              }
               k = i+1;
             }
           }
-          args = fn.Split('\t');
+          args = tx.Split('\t');
           for (i = 0; i<args.Length; i++) {
             if (args[i].Length>1) {
               if (args[i][0]==args[i][args[i].Length-1]) {
@@ -605,21 +675,40 @@ public class f : Form {
             }
           }
         }
+        tx = string.Empty;
+      } else if(args.Length>0) {
+        tx = "<?xml version=\"1.0\" encoding=\"UTF-16\"?>"+@"
+<Task version="+"\"1.2\" xmlns=\"http://schemas.microsoft.com/windows/2004/02/mit/task\">"+@"
+  <Triggers>
+    <BootTrigger>
+      <Enabled>true</Enabled>
+    </BootTrigger>
+  </Triggers>
+  <Principals>
+    <Principal>
+      <RunLevel>HighestAvailable</RunLevel>
+    </Principal>
+  </Principals>
+  <Settings>
+    <ExecutionTimeLimit>PT0S</ExecutionTimeLimit>
+  </Settings>
+  <Actions>
+    <Exec>
+      <Command>"+toStd(Fullexe)+@"</Command>
+      <Arguments>";
       }
 
       // Разбор параметров
       for (i = 0; i < args.Length; i++){
         switch (args[i]){
         case "-p":
-          i++;
-          if(i < args.Length){
+          if(toArg(args, ref ta)){
             k=valInt(args[i]);
             if(k > 0 && k <= p9) port=k;
           }
           break;
         case "-b":
-          i++;
-          if(i < args.Length){
+          if(toArg(args, ref ta)){
             k=valInt(args[i]);
             if(k<b0){
               bu=b0;
@@ -629,78 +718,86 @@ public class f : Form {
           }            
           break;
         case "-q":
-          i++;
-          if(i < args.Length){
+          if(toArg(args, ref ta)){
             k=valInt(args[i]);
             qu=(k > 0 && k <= q9)? k : q9;
           }            
           break;
         case "-s":
-          i++;
-          if(i < args.Length){
+          if(toArg(args, ref ta)){
             k=valInt(args[i]);
             st= k>3? (k<=s9? k : s9) : 4;
           }            
           break;
         case "-n":
-          i++;
-          if(i < args.Length){
+          if(toArg(args, ref ta)){
             k=valInt(args[i]);
             if(k >= 0 && k <= db9) db=k;
           }            
           break;
         case "-w":
-          i++;
-          if(i < args.Length){
+          if(toArg(args, ref ta)){
             k=valInt(args[i]);
             tw=((k > 0 && k <= t9)? k : t9)*1000;
           }            
           break;
         case "-log":
-          i++;
-          if(i < args.Length){
+          if(toArg(args, ref ta)){
             k=valInt(args[i]);
             log9=(k < log0)? 0 : k;
           }            
           break;
         case "-post":
-          i++;
-          if(i < args.Length){
+          if(toArg(args, ref ta)){
             k=valInt(args[i]);
             post=(k > 0)? k : post9;
           }            
           break;
         case "-d":
-          i++;
-          if(i < args.Length) DocumentRoot=
+          if(toArg(args, ref ta)) DocumentRoot=
             (args[i].EndsWith("/")||args[i].EndsWith("\\"))?args[i]:args[i]+"/";
           break;
         case "-i":
-          i++;
-          if(i < args.Length) DirectoryIndex=args[i];
+          if(toArg(args, ref ta)) DirectoryIndex=args[i];
           break;
         case "-c":
-          i++;
-          if(i < args.Length) CerFile=args[i];
+          if(toArg(args, ref ta)) CerFile=args[i];
           break;
         case "-proc":
-          i++;
-          if(i < args.Length) Proc=args[i];
+          if(toArg(args, ref ta)) Proc=args[i];
           break;
         case "-args":
-          i++;
-          if(i < args.Length) Args=args[i];
+          if(toArg(args, ref ta)) Args=args[i];
           break;
         case "-ext":
-          i++;
-          if(i < args.Length) Ext=args[i];
+          if(toArg(args, ref ta)) Ext=args[i];
+          break;
+        case "/regserver":
+          ts = "/create /tn "+hn+" /ru system /xml "+fn;
+          i = args.Length;
+          notQuit = false;
+          break;
+        case "/unregserver":
+          ts = "/delete /f /tn \\"+hn;
+          i = args.Length;
+          notQuit = false;
           break;
         default:
+          i = args.Length;
           l=false;
           break;
         }
-        if(!l) break;
       }
+
+      if(l) {
+        if(tx.Length>0) File.WriteAllText(fn, tx+ta+@"</Arguments>
+    </Exec>
+  </Actions>
+</Task>
+");
+        if(ts.Length>0) schtasks(ref ts);
+      }
+
       textBox1 = new TextBox()
       {
         Location = new Point(5,5),
@@ -716,11 +813,12 @@ public class f : Form {
 
 USAGE:
     https.net [Parameter1 Value1] [Parameter2 Value2] ...
-    https.net @filename
+    https.net /regserver              Starting the server when the computer is turned on.
+    https.net /unregserver            Deleting the server startup task.
 
     If necessary, Parameter and Value pairs are specified. If the value is text and contains
-    spaces, then it must be enclosed in quotation marks. You can specify @filename which
-    contains the entire line with parameters.
+    spaces, then it must be enclosed in quotation marks. You can also specify the parameter
+    string in the xml file in the <Arguments></Arguments> section.
 
 Parameters:                                                                  Values:
      -d      Folder containing the domains.                                      "+DocumentRoot+@"
