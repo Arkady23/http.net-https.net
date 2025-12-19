@@ -257,3 +257,4 @@ If there is an error in the prg file:
 3.4.2. May 2025. The blocking against DoS-attacks has been softened so that decent clients are not blocked. The number of simultaneous requests from one client has been increased to 100.  
 3.5.0. June 2025. The threshold for DoS-attacks has been slightly weakened. Failed connections are no longer recorded in the log.  
 3.6.0. November 2025. Fixed COM VFP.memlib32 loading error when using VFP9. The visual form with parameters is now hidden while the server is running.  
+3.7.0. December 2025. Instead of a file with a parameter string, an XML task file is now used, which includes a standard argument string used to launch the server if it is started without parameters. Options for starting the server with the /regserver and /unregserver switches have also been added.  
