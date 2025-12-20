@@ -1,7 +1,7 @@
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!                                                     !!
 //!!   http.net сервер на C#.     Автор: A.Б.Корниенко   !!
-//!!   Головной блок              версия от 19.12.2025   !!
+//!!   Головной блок              версия от 20.12.2025   !!
 //!!                                                     !!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -45,7 +45,7 @@ public class f : Form {
                  CT_T=CT+": text/plain\r\n", stopIconText= hs+" is stopped",
                  initCGI= "initcgi.",
            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                 ver="version 3.7.0", verD="December 2025";   //!!
+                 ver="version 3.7.1", verD="December 2025";   //!!
            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public const  int i2=2, i9=2147483647;
     public const  byte b0=0, b1=1, b2=2, b10=10, b13=13;
@@ -513,8 +513,8 @@ public class f : Form {
       try {
         Process p = Process.Start(ps);
         //p.StandardInput.Close();
-        k = p.StandardOutput.BaseStream.Read(buf,0,100);
-        output = Encoding.GetEncoding(866).GetString(buf);
+        output = Encoding.GetEncoding(866).GetString(buf,0,
+                 p.StandardOutput.BaseStream.Read(buf,0,100));
         p.WaitForExit();
         ret = true;
       } catch(Exception) {
