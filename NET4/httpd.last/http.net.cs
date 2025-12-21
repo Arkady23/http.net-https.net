@@ -45,7 +45,7 @@ public class f : Form {
                  CT_T=CT+": text/plain\r\n", stopIconText= hs+" is stopped",
                  initCGI= "initcgi.",
            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                 ver="version 3.7.3", verD="December 2025";   //!!
+                 ver="version 3.7.4", verD="December 2025";   //!!
            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public const  int i2=2, i9=2147483647;
     public const  byte b0=0, b1=1, b2=2, b10=10, b13=13;
@@ -250,7 +250,7 @@ public class f : Form {
           bu8 = bu4+bu4;
           bu0 = bu - 1;
 
-          st1 = st>90? 23 : st*1/4;   // Позволено запросов от одного IP
+          st1 = st>14? 4 : st/4;        // Позволено запросов от одного IP
           nClients = st;                // Начальное число соединений
 
           // Создать объекты сессий предварительно очистив сессии от предыдущих запусков
