@@ -1,7 +1,7 @@
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!                                                     !!
 //!!   https.net сервер на C#.    Автор: A.Б.Корниенко   !!
-//!!   Головной блок              версия от 20.12.2025   !!
+//!!   Головной блок              версия от 21.12.2025   !!
 //!!                                                     !!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -46,7 +46,7 @@ public class f : Form {
                  CT_T=CT+": text/plain\r\n", stopIconText= hs+" is stopped",
                  initCGI= "initcgi.",
            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                 ver="version 1.7.1", verD="December 2025";   //!!
+                 ver="version 1.7.2", verD="December 2025";   //!!
            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public const  int i2=2, i9=2147483647;
     public const  byte b0=0, b1=1, b2=2, b10=10, b13=13;
@@ -815,8 +815,8 @@ USAGE:
     https.net /unregserver            Deleting the server startup task.
 
     If necessary, Parameter and Value pairs are specified. If the value is text and contains
-    spaces, then it must be enclosed in quotation marks. You can also specify the parameter
-    string in the xml file in the <Arguments></Arguments> section.
+    spaces, then it must be enclosed in quotation marks. You can also specify the string of
+    parameters in the xml file in the <Arguments></Arguments> section.
 
 Parameters:                                                                  Values:
      -d      Folder containing the domains.                                      "+DocumentRoot+@"
