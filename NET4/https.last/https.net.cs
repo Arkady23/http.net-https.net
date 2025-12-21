@@ -46,7 +46,7 @@ public class f : Form {
                  CT_T=CT+": text/plain\r\n", stopIconText= hs+" is stopped",
                  initCGI= "initcgi.",
            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                 ver="version 1.7.4", verD="December 2025";   //!!
+                 ver="version 1.7.5", verD="December 2025";   //!!
            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public const  int i2=2, i9=2147483647;
     public const  byte b0=0, b1=1, b2=2, b10=10, b13=13;
@@ -512,34 +512,6 @@ public class f : Form {
       return z;
     }
 
-    // Выполнить команду "schtasks"
-    private bool schtasks(ref string par){
-      bool ret;
-      string output;
-      byte[] buf = new byte[100];
-      var ps = new ProcessStartInfo();
-      ps.FileName = "schtasks";
-      ps.CreateNoWindow = true;
-      ps.UseShellExecute = false;
-      ps.RedirectStandardOutput = true;
-      ps.Arguments = par;
-      try {
-        Process p = Process.Start(ps);
-        output = Encoding.GetEncoding(866).GetString(buf,0,
-                 p.StandardOutput.BaseStream.Read(buf,0,100));
-        p.WaitForExit();
-        ret = true;
-      } catch(Exception) {
-        output = "FAILED :-(";
-        ret = false;
-      }
-      if(output.Length>2) {
-        nIcon.ShowBalloonTip(6100, "Schtasks command", output,
-              ret? ToolTipIcon.Info:ToolTipIcon.Error);
-      }
-      return ret;
-    }
-
     // Запуск скрипта initCGI
     public static bool start_CGI(int i) {
 
@@ -615,6 +587,34 @@ public class f : Form {
       maxNumberAcceptedClients.Release();
     }
 
+    // Выполнить команду "schtasks"
+    private bool schtasks(ref string par){
+      bool ret;
+      string output;
+      byte[] buf = new byte[100];
+      var ps = new ProcessStartInfo();
+      ps.FileName = "schtasks";
+      ps.CreateNoWindow = true;
+      ps.UseShellExecute = false;
+      ps.RedirectStandardOutput = true;
+      ps.Arguments = par;
+      try {
+        Process p = Process.Start(ps);
+        output = Encoding.GetEncoding(866).GetString(buf,0,
+                 p.StandardOutput.BaseStream.Read(buf,0,100));
+        p.WaitForExit();
+        ret = true;
+      } catch(Exception) {
+        output = "FAILED :-(";
+        ret = false;
+      }
+      if(output.Length>2) {
+        nIcon.ShowBalloonTip(6100, "Schtasks command", output,
+              ret? ToolTipIcon.Info:ToolTipIcon.Error);
+      }
+      return ret;
+    }
+
     int odd(string z) {
       return (z.Length - z.Replace("'", string.Empty).Length)%2 +
              (z.Length - z.Replace("\"", string.Empty).Length)%2;
@@ -624,19 +624,15 @@ public class f : Form {
       return z.Contains(" ")? "\""+z+"\"": z;
     }
 
-    bool toArg(string[] args, ref string ta) {
+    bool toArg(string[] args) {
       i++;
-      if(i < args.Length){
-        ta += (i>1?" ":string.Empty)+args[i-1]+" "+toStd(args[i]);
-        return true;
-      }
-      return false;
+      return i<args.Length;
     }
 
     private bool getArgs(String[] args){
       const int b9=131072, db9=1000, p9=65535, q9=2147483647, post9=33554432, b0=512,
                 log0=80, t9=20;
-      string tx=string.Empty, ta=string.Empty, ts=string.Empty, cA="Arguments>", fn=hn+".xml";
+      string tx=string.Empty, ts=string.Empty, cA="Arguments>", fn=hn+".xml";
       bool l=true;
       int i1= -1;
 
@@ -693,20 +689,24 @@ public class f : Form {
   <Actions>
     <Exec>
       <Command>"+toStd(Fullexe)+@"</Command>
-      <Arguments>";
+      <Arguments></Arguments>
+    </Exec>
+  </Actions>
+</Task>
+";
       }
 
       // Разбор параметров
       for (i = 0; i < args.Length; i++){
         switch (args[i]){
         case "-p":
-          if(toArg(args, ref ta)){
+          if(toArg(args)){
             k=valInt(args[i]);
             if(k > 0 && k <= p9) port=k;
           }
           break;
         case "-b":
-          if(toArg(args, ref ta)){
+          if(toArg(args)){
             k=valInt(args[i]);
             if(k<b0){
               bu=b0;
@@ -716,62 +716,63 @@ public class f : Form {
           }            
           break;
         case "-q":
-          if(toArg(args, ref ta)){
+          if(toArg(args)){
             k=valInt(args[i]);
             qu=(k > 0 && k <= q9)? k : q9;
           }            
           break;
         case "-s":
-          if(toArg(args, ref ta)){
+          if(toArg(args)){
             k=valInt(args[i]);
             st= k>3? (k<=s9? k : s9) : 4;
           }            
           break;
         case "-n":
-          if(toArg(args, ref ta)){
+          if(toArg(args)){
             k=valInt(args[i]);
             if(k >= 0 && k <= db9) db=k;
           }            
           break;
         case "-w":
-          if(toArg(args, ref ta)){
+          if(toArg(args)){
             k=valInt(args[i]);
             tw=((k > 0 && k <= t9)? k : t9)*1000;
           }            
           break;
         case "-log":
-          if(toArg(args, ref ta)){
+          if(toArg(args)){
             k=valInt(args[i]);
             log9=(k < log0)? 0 : k;
           }            
           break;
         case "-post":
-          if(toArg(args, ref ta)){
+          if(toArg(args)){
             k=valInt(args[i]);
             post=(k > 0)? k : post9;
           }            
           break;
         case "-d":
-          if(toArg(args, ref ta)) DocumentRoot=
+          if(toArg(args)) DocumentRoot=
             (args[i].EndsWith("/")||args[i].EndsWith("\\"))?args[i]:args[i]+"/";
           break;
         case "-i":
-          if(toArg(args, ref ta)) DirectoryIndex=args[i];
+          if(toArg(args)) DirectoryIndex=args[i];
           break;
         case "-c":
-          if(toArg(args, ref ta)) CerFile=args[i];
+          if(toArg(args)) CerFile=args[i];
           break;
         case "-proc":
-          if(toArg(args, ref ta)) Proc=args[i];
+          if(toArg(args)) Proc=args[i];
           break;
         case "-args":
-          if(toArg(args, ref ta)) Args=args[i];
+          if(toArg(args)) Args=args[i];
           break;
         case "-ext":
-          if(toArg(args, ref ta)) Ext=args[i];
+          if(toArg(args)) Ext=args[i];
           break;
         case "/regserver":
           ts = "/create /tn "+hn+" /ru system /xml "+fn;
+          if(tx.Length>0) File.WriteAllText(fn,tx);
           i = args.Length;
           notQuit = false;
           break;
@@ -787,14 +788,7 @@ public class f : Form {
         }
       }
 
-      if(l) {
-        if(tx.Length>0) File.WriteAllText(fn, tx+ta+@"</Arguments>
-    </Exec>
-  </Actions>
-</Task>
-");
-        if(ts.Length>0) schtasks(ref ts);
-      }
+      if(ts.Length>0) schtasks(ref ts);
 
       textBox1 = new TextBox()
       {
