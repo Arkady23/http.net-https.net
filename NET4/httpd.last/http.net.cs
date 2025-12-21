@@ -45,12 +45,12 @@ public class f : Form {
                  CT_T=CT+": text/plain\r\n", stopIconText= hs+" is stopped",
                  initCGI= "initcgi.",
            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                 ver="version 3.7.5", verD="December 2025";   //!!
+                 ver="version 3.7.6", verD="December 2025";   //!!
            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public const  int i2=2, i9=2147483647;
     public const  byte b0=0, b1=1, b2=2, b10=10, b13=13;
-    public static int i, k, port, post, st, qu, bu, bu0, bu1, bu2, bu3, bu4, bu8, db, log9,
-                  st1, tw, iIP, iIP1, nClients, s9=1000, logi=0;
+    public static int i, k, port, post, st, qu, bu, bu0, bu1, bu2, bu3, bu4, bu8, db,
+                  log9, st1, tw, iIP, iIP1, nClients, s9=1000, logi=0;
     public static string IP, IP1, DocumentRoot, Folder=Thread.GetDomain().BaseDirectory,
                   DirectoryIndex, Proc, Args, Ext, logZ=string.Empty, DirectorySessions;
     private static string Fullexe = Folder+hn+".exe";
@@ -230,6 +230,7 @@ public class f : Form {
       tw=10000;
       qu=100;
       st=300;
+      st1=5;
       db=30;
 
       if(getArgs(args)){
@@ -250,13 +251,9 @@ public class f : Form {
           bu8 = bu4+bu4;
           bu0 = bu - 1;
 
-          st1 = st>14? 4 : st/4;        // Позволено запросов от одного IP
-          nClients = st;                // Начальное число соединений
-
           // Создать объекты сессий предварительно очистив сессии от предыдущих запусков
-          session = null;
-          i = st<2? 4 : st;
-          ThreadPool.SetMinThreads(i,i);
+          nClients = st;                    // Начальное число соединений
+          ThreadPool.SetMinThreads(st,st);
           session = new Session[st];
           try{
             Parallel.For(0,st,j => { session[j] = new Session(j); });
@@ -715,6 +712,9 @@ public class f : Form {
             st= k>3? (k<=s9? k : s9) : 4;
           }            
           break;
+        case "-s1":
+          if(toArg(args)) st1=valInt(args[i]);
+          break;
         case "-n":
           if(toArg(args)){
             k=valInt(args[i]);
@@ -808,6 +808,7 @@ Parameters:                                                                  Val
      -b      Size of read/write buffers.                                         "+bu.ToString()+@"
      -s      Number of requests being processed at the same time. Maximum        "+st.ToString()+@"
              value is "+s9.ToString()+@".
+     -s1     The number of allowed wait threads per IP address.                  "+st1.ToString()+@"
      -q      Number requests stored in the queue.                                "+qu.ToString()+@"
      -w      Allowed time to reserve an open channel for request that did not    "+(tw/1000).ToString()+@"
              started. From 1 to "+t9.ToString()+@" seconds.
