@@ -14,7 +14,7 @@ By default, http and https servers will process scripts in Visual Foxpro and Pyt
 Prg scripts are processed using COM technology and VFP 9/10(Advanced) DBMS, not CGI. COM objects are created as requests from clients are executed. By default, visual error output in VFP 9/10(Advanced) DBMS is disabled. In case of an error in prg, a description of this error is returned to the script in the ERROR_MESS variable. Below is an example of a prg file and the result of its work. And also the result of working with a similar prg file, but with an error (the last line break ";" is missing).
 ```PowerShell
 PS D:\> D:\work\httpd\http.net.exe /?
-Multithreaded http.net server version 3.7.1, (C) a.kornienko.ru December 2025.
+Multithreaded http.net server version 3.7.3, (C) a.kornienko.ru December 2025.
 
 USAGE:
     http.net [Parameter1 Value1] [Parameter2 Value2] ...
@@ -258,3 +258,4 @@ If there is an error in the prg file:
 3.5.0. June 2025. The threshold for DoS-attacks has been slightly weakened. Failed connections are no longer recorded in the log.  
 3.6.0. November 2025. Fixed COM VFP.memlib32 loading error when using VFP9. The visual form with parameters is now hidden while the server is running.  
 3.7.0-3.7.2. December 2025. Instead of a file with a parameter string, an XML task file is now used, which includes a standard argument string used to launch the server if it is started without parameters. Options for starting the server with the /regserver and /unregserver switches have also been added.  
+3.7.3. December 2025. DoS-attack detection mechanism has been changed. Thanks, hackers. Keep up the attacks — it's fun.  
