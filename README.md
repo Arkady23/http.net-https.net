@@ -260,4 +260,4 @@ If there is an error in the prg file:
 3.7.0-3.7.2. December 2025. Instead of a file with a parameter string, an XML task file is now used, which includes a standard argument string used to launch the server if it is started without parameters. Options for starting the server with the /regserver and /unregserver switches have also been added.  
 3.7.3. December 2025. DoS-attack detection mechanism has been changed. Thanks, hackers. Keep up the attacks — it's fun.  
 3.7.4. December 2025. Thanks to the hacker for the efficiency. The criteria for DoS-attacks have been tightened.  
-3.7.5. December 2025. Small bug in the xml file.
+3.7.5. December 2025. Small bug in working with XML file.  
