@@ -46,7 +46,7 @@ public class f : Form {
                  CT_T=CT+": text/plain\r\n", stopIconText= hs+" is stopped",
                  initCGI= "initcgi.",
            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                 ver="version 1.7.6", verD="December 2025";   //!!
+                 ver="version 1.7.7", verD="December 2025";   //!!
            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public const  int i2=2, i9=2147483647;
     public const  byte b0=0, b1=1, b2=2, b10=10, b13=13;
@@ -233,8 +233,8 @@ public class f : Form {
       Ext="pyc";
       tw=10000;
       qu=100;
-      st=300;
-      st1=5;
+      st=100;
+      st1=3;
       db=30;
 
       if(getArgs(args)){
@@ -631,7 +631,7 @@ public class f : Form {
                 log0=80, t9=20;
       string tx=string.Empty, ts=string.Empty, cA="Arguments>", fn=hn+".xml";
       bool l=true;
-      int i1= -1;
+      int k1;
 
       if(File.Exists(fn)) {
         if(args.Length==0) {
@@ -639,19 +639,20 @@ public class f : Form {
           k = tx.IndexOf("<"+cA,StringComparison.OrdinalIgnoreCase)+11;
           tx = tx.Substring(k, tx.IndexOf("</"+cA,StringComparison.OrdinalIgnoreCase)-k).
                Replace("\t", " ").Replace("\r"," ").Replace("\n"," ").Trim();
-          k = 1;
+          k1 = k = 0;
           while (k<tx.Length) {
-            i = tx.IndexOf(" ",k);
+            i = tx.IndexOf(" ", k);
             if(i<0) {
               k = tx.Length;
             } else {
-              if(odd(tx.Substring(k, i-k-1))==0) {
-                if((i-i1)>1) {
+              if(odd(tx.Substring(k1, i-k1))==0) {
+                if(i>k) {
                   tx = tx.Substring(0,i)+"\t"+tx.Substring(i+1);
                 } else {
                   tx = tx.Substring(0,i)+tx.Substring(i+1);
                   i--;
                 }
+                k1 = i+1;
               }
               k = i+1;
             }
