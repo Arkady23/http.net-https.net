@@ -23,7 +23,7 @@ USAGE:
 
     If necessary, Parameter and Value pairs are specified. If the value is text and contains
     spaces, then it must be enclosed in quotation marks. You can also specify the parameters
-    string in the xml file in the <Arguments></Arguments> section.
+    string in the http.net.xml file in the <Arguments></Arguments> section.
 
 Parameters:                                                                  Default values:
      -d      Folder containing the domains.                                      ../www/
