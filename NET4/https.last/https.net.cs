@@ -46,7 +46,7 @@ public class f : Form {
                  CT_T=CT+": text/plain\r\n", stopIconText= hs+" is stopped",
                  initCGI= "initcgi.",
            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                 ver="version 1.7.7", verD="December 2025";   //!!
+                 ver="version 1.7.8", verD="December 2025";   //!!
            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public const  int i2=2, i9=2147483647;
     public const  byte b0=0, b1=1, b2=2, b10=10, b13=13;
@@ -633,8 +633,11 @@ public class f : Form {
       bool l=true;
       int k1;
 
+      // Если введён ключ вида /? или -? или /help или -help
+      if (args.Length==1) l = args[0].Length>9;
+
       if(File.Exists(fn)) {
-        if(args.Length==0) {
+        if(args.Length==0 || !l) {
           tx = File.ReadAllText(fn);
           k = tx.IndexOf("<"+cA,StringComparison.OrdinalIgnoreCase)+11;
           tx = tx.Substring(k, tx.IndexOf("</"+cA,StringComparison.OrdinalIgnoreCase)-k).
@@ -783,7 +786,6 @@ public class f : Form {
           notQuit = false;
           break;
         default:
-          i = args.Length;
           l=false;
           break;
         }
