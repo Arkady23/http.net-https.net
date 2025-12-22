@@ -5,7 +5,7 @@ Multithreaded http.net and https.net servers with Visual Foxpro on COM and with 
 ### General information
 The root folder for domains (www by default) should contain folders corresponding to the domain name and subdomain of the requested resource. If the request looks like http://a.kornienko.ru or https://a.kornienko.ru, then the root folder for domains should contain a folder named a.kornienko.ru, for example: D:/work/www/a.kornienko.ru. If you need the folder to open at a different address, you should create a corresponding symbolic link to the same folder so that one folder is available at two different paths. To do this, use the Windows mklink command with the /d key.  
 
-The number of threads should not be set to the maximum possible. The default is 300. Watch the log, the last numeric field in each entry shows the number of the running thread. Over time, you will understand how many simultaneous threads you have in use. This value is probably significantly less than 300.  
+The number of threads should not be set to the maximum possible. The default is 100. Watch the log, the last numeric field in each entry shows the number of the running thread. Over time, you will understand how many simultaneous threads you have in use. This value is probably significantly less than 100.  
 
 Http and https servers support only fast CGI, using a simple script using the quick start technology. For example, for the Python language, this is the initcgi.py script, given in the repository in the NET4/www/ folder. The script interpreter runs the initcgi script not at the moment of receiving a request from the client, but after sending the next response. Such an initial script can be implemented in most modern interpreted languages. This does not apply to prg scripts, for which the initCGI role is performed by the VisualFoxPro.Application COM server.  
 
@@ -14,7 +14,7 @@ By default, http and https servers will process scripts in Visual Foxpro and Pyt
 Prg scripts are processed using COM technology and VFP 9/10(Advanced) DBMS, not CGI. COM objects are created as requests from clients are executed. By default, visual error output in VFP 9/10(Advanced) DBMS is disabled. In case of an error in prg, a description of this error is returned to the script in the ERROR_MESS variable. Below is an example of a prg file and the result of its work. And also the result of working with a similar prg file, but with an error (the last line break ";" is missing).
 ```PowerShell
 PS D:\> D:\work\httpd\http.net.exe /?
-Multithreaded http.net server version 3.7.6, (C) a.kornienko.ru December 2025.
+Multithreaded http.net server version 3.7.7, (C) a.kornienko.ru December 2025.
 
 USAGE:
     http.net [Parameter1 Value1] [Parameter2 Value2] ...
@@ -34,9 +34,9 @@ Parameters:                                                                  Def
              are supported, for example - index.html.gz or library.js.gz etc.
      -p      Port that the server is listening on.                               8080
      -b      Size of read/write buffers.                                         131072
-     -s      Number of requests being processed at the same time. Maximum        300
+     -s      Number of requests being processed at the same time. Maximum        100
              value is 1000.
-     -s1     The number of allowed wait threads per IP address.                  5
+     -s1     The number of allowed wait threads per IP address.                  3
      -q      Number requests stored in the queue.                                100
      -w      Allowed time to reserve an open channel for request that did not    10
              started. From 1 to 20 seconds.
@@ -64,7 +64,7 @@ Parameters:                                                                  Def
 ### Общие сведения
 Корневая папка для доменов (по умолчанию www) должна содержать папки, соответствующие доменному имени и поддомену запрашиваемого ресурса. Если запрос выглядит как http://a.kornienko.ru или https://a.kornienko.ru, то в корневой папке для доменов должна быть папка с именем a.kornienko.ru, например: D:/work/www/a.kornienko.ru. Если вам нужно, чтобы эта же папка открывалась по другому адресу, то вы должны на эту папку создать соответствующую символическую ссылку, чтобы одна папка была доступна по двум разным путям. Для этого воспользуйтесь командой Windows mklink с ключем /d.  
 
-Число потоков не следут задавать максимально возможным. По умолчанию — 300. Наблюдайте за журналом, в последнем числовом поле в каждой записи отображен номер работающего потока. Со временем вы поймете какое число одновременных потоков у вас используется. Вероятно это значение значительно меньше 300.  
+Число потоков не следут задавать максимально возможным. По умолчанию — 100. Наблюдайте за журналом, в последнем числовом поле в каждой записи отображен номер работающего потока. Со временем вы поймете какое число одновременных потоков у вас используется. Вероятно это значение значительно меньше 100.  
 
 Серверы http и https поддерживают только быстрый CGI, используя простой скрипт по технологии быстрый старт. Например, для языка Python это скрипт initcgi.py, приведеный в репозитории в папке NET4/www/. Интерпретатор скриптов запускает initcgi-скрипт не в момент поступления запроса от клиента, а после отправки очередного ответа. Такой начальный скрипт может быть реализовон на большинстве современных интерпретируемых языках. Это не относится к скриптам prg, у которых роль initCGI выполняет COM-сервер VisualFoxPro.Application.  
 
@@ -263,3 +263,4 @@ If there is an error in the prg file:
 3.7.4. December 2025. Thanks to the hacker for the efficiency. The criteria for DoS-attacks have been tightened.  
 3.7.5. December 2025. Small bug in working with XML file.  
 3.7.6. December 2025. Added the s1 parameter — the number of allowed threads waiting for a request on a single IP address. Reducing this number protects the server from DoS-attacks.  
+3.7.7. December 2025. The parameters string is now insensitive to excessive spaces, tabs, and line breaks. The default values ​​have also been changed. The number of threads is now 100, and the number of pending threads per IP is 3.  
