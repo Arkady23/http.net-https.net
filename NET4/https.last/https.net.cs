@@ -810,8 +810,8 @@ USAGE:
     https.net /unregserver            Deleting the server startup task.
 
     If necessary, Parameter and Value pairs are specified. If the value is text and contains
-    spaces, then it must be enclosed in quotation marks. You can also specify the string of
-    parameters in the xml file in the <Arguments></Arguments> section.
+    spaces, then it must be enclosed in quotation marks. You can also specify the parameters
+    string in the xml file in the <Arguments></Arguments> section.
 
 Parameters:                                                                  Values:
      -d      Folder containing the domains.                                      "+DocumentRoot+@"
