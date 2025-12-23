@@ -153,15 +153,13 @@ namespace https2 {
                 }
               }
             } else {
-              if(gzExists()) {
-                putHead(true);
-              } else {
+              if(!gzExists(true)) {
                 if(File.Exists(res)) {
                   putHead(true);
                 } else {
-                  putHead(false);
                   res = f.DocumentRoot+f.DI;
-                  if(!gzExists()) {
+                  if(!gzExists(false)) {
+                    putHead(false);
                     if(!File.Exists(res)) {
                       R = f.b0;
                       failure("404 Not Found");
@@ -216,11 +214,12 @@ namespace https2 {
       h1 = f.CC;
     }
 
-    bool gzExists() {
+    bool gzExists(bool CT) {
       string gz=res+".gz";
       bool l = File.Exists(gz);
       if( l ) {
-       res = gz;
+        res = gz;
+        putHead(CT);
         head += "Content-Encoding: gzip\r\n";
       }
       return l;
