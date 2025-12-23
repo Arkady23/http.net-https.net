@@ -1,7 +1,7 @@
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!                                                         !!
 //!!    http.net сервер на C#.       Автор: A.Б.Корниенко    !!
-//!!    class Session                версия от 22.12.2025    !!
+//!!    class Session                версия от 23.12.2025    !!
 //!!                                                         !!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -127,8 +127,8 @@ namespace http2 {
             n1 = 0;
             n2 = f.bu2;
             nbuf = f.bu8;
-            head="Date: "+dt1.ToString("R")+"\r\n"+h1+Content_T;
             if(R>f.b1) {
+              putHead(true);
               if(R1>f.b0 || File.Exists(res)) {
                 x2 = f.valStr(ref Content_Type,"charset");
                 if(x2.Length>0 && !String.Equals(x2,f.UTF8,
@@ -142,8 +142,13 @@ namespace http2 {
                 }
               }
             } else {
-              if(!gzExists()) {
-                if(!File.Exists(res)) {
+              if(gzExists()) {
+                putHead(true);
+              } else {
+                if(File.Exists(res)) {
+                  putHead(true);
+                } else {
+                  putHead(false);
                   res = f.DocumentRoot+f.DI;
                   if(!gzExists()) {
                     if(!File.Exists(res)) {
@@ -188,8 +193,16 @@ namespace http2 {
       client.Close();
     }
 
+    void putHead(bool CT) {
+      // CT - true, тип контента не изменяется
+      //      false, тип контента стал html.
+      head="Date: "+dt1.ToString("R")+"\r\n"+h1+
+           (CT? Content_T : f.CT+": text/html\r\n");
+    }
+
     void putCT(ref string c, string x) {
       c = f.CT+": "+x+"\r\n";
+      h1 = f.CC;
     }
 
     bool gzExists() {
@@ -309,41 +322,33 @@ namespace http2 {
         switch(ext) {
         case "html":
           putCT(ref Content_T,"text/html");
-          h1 = f.CC;
           break;
         case "svg":
           putCT(ref Content_T,"image/svg+xml");
-          h1 = f.CC;
           break;
         case "gif":
           putCT(ref Content_T,"image/gif");
-          h1 = f.CC;
           break;
         case "png":
           putCT(ref Content_T,"image/png");
-          h1 = f.CC;
           break;
         case "jpeg":
         case "jpg":
           putCT(ref Content_T,"image/jpeg");
-          h1 = f.CC;
           break;
         case "js":
           putCT(ref Content_T,"text/javascript");
-          h1 = f.CC;
           break;
         case "css":
           putCT(ref Content_T,"text/css");
-          h1 = f.CC;
           break;
         case "ico":
           putCT(ref Content_T,"image/x-icon");
-          h1 = f.CC;
           break;
         case "mp4":
           putCT(ref Content_T,"video/mp4");
-          h1 = f.CC;
           break;
+        case "txt":
         case "":
           Content_T = f.CT_T;
           break;
