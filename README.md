@@ -16,7 +16,7 @@ The https.net version differs from http.net only by the addition of one addition
 Prg scripts are processed using COM technology and VFP 9/10(Advanced) DBMS, not CGI. COM objects are created as requests from clients are executed. By default, visual error output in VFP 9/10(Advanced) DBMS is disabled. In case of an error in prg, a description of this error is returned to the script in the ERROR_MESS variable. Below is an example of a prg file and the result of its work. And also the result of working with a similar prg file, but with an error (the last line break ";" is missing).
 ```PowerShell
 PS D:\> D:\work\httpd\http.net.exe /?
-Multithreaded http.net server version 3.7.8, (C) a.kornienko.ru December 2025.
+Multithreaded http.net server version 3.7.9, (C) a.kornienko.ru December 2025.
 
 USAGE:
     http.net [Parameter1 Value1] [Parameter2 Value2] ...
@@ -269,3 +269,4 @@ If there is an error in the prg file:
 3.7.6. December 2025. Added the s1 parameter — the number of allowed threads waiting for a request on a single IP address. Reducing this number protects the server from DoS-attacks.  
 3.7.7. December 2025. The parameters string is now insensitive to excessive spaces, tabs, and line breaks. The default values ​​have also been changed. The number of threads is now 100, and the number of pending threads per IP is 3.  
 3.7.8 http.net / 1.7.8 https.net. December 2025. Bug with providing help and displaying the parameters string. Now you can use /? or -? or /help or -help or basically anything without spaces less than 10 characters.  
+3.7.9 http.net / 1.7.9 https.net. December 2025. Bug in response header "404 Not Found".  
