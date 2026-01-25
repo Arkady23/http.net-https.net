@@ -270,3 +270,4 @@ If there is an error in the prg file:
 3.7.7. December 2025. The parameters string is now insensitive to excessive spaces, tabs, and line breaks. The default values ​​have also been changed. The number of threads is now 100, and the number of pending threads per IP is 3.  
 3.7.8 http.net / 1.7.8 https.net. December 2025. Bug with providing help and displaying the parameters string. Now you can use /? or -? or /help or -help or basically anything without spaces less than 10 characters.  
 3.7.9 http.net / 1.7.9 https.net. December 2025. Bug in response header "404 Not Found".  
+3.8.0 http.net / 1.8.0 https.net. January 2026. Adjusting the DOS-attack threshold. They haven't been around for a while.  
