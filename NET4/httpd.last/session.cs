@@ -1,7 +1,7 @@
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!                                                         !!
 //!!    http.net сервер на C#.       Автор: A.Б.Корниенко    !!
-//!!    class Session                версия от 23.12.2025    !!
+//!!    class Session                версия от 25.01.2026    !!
 //!!                                                         !!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -94,7 +94,7 @@ namespace http2 {
       dt1 = DateTime.UtcNow;
       point = client.RemoteEndPoint as IPEndPoint;
       IP = point.Address.ToString();
-      if((f.iIP>f.i2 && f.IP==IP) || (f.iIP1>f.st1 && f.IP1==IP)) {
+      if((f.iIP>8 && f.IP==IP) || (f.iIP1>f.st1 && f.IP1==IP)) {
         clientClose();
       } else {
         Interlocked.Increment(ref f.nClients);
