@@ -36,10 +36,11 @@ Parameters:                                                                  Def
              are supported, for example - index.html.gz or library.js.gz etc.
      -p      Port that the server is listening on.                               8080
      -b      Size of read/write buffers.                                         131072
+     -q      Allowable number of requests in the queue.                          100
+     -q1     Allowed number of requests in the queue per IP.                     4
      -s      Number of requests being processed at the same time. Maximum        100
              value is 1000.
-     -s1     The number of allowed wait threads per IP address.                  3
-     -q      Number requests stored in the queue.                                100
+     -s1     Allowed number of simultaneously processed requests per IP.         8
      -w      Allowed time to reserve an open channel for request that did not    10
              started. From 1 to 20 seconds.
      -n      Maximum number of dynamically running interpreters or MS VFP        30
@@ -271,3 +272,4 @@ If there is an error in the prg file:
 3.7.8 http.net / 1.7.8 https.net. December 2025. Bug with providing help and displaying the parameters string. Now you can use /? or -? or /help or -help or basically anything without spaces less than 10 characters.  
 3.7.9 http.net / 1.7.9 https.net. December 2025. Bug in response header "404 Not Found".  
 3.8.0 http.net / 1.8.0 https.net. January 2026. Adjusting the DOS-attack threshold. They haven't been around for a while.  
+3.8.1 http.net / 1.8.1 https.net. January 2026. Added a fine-tuning parameter, qu1, which affects the blocking of DOS-attacks. Reducing this value to 3 completely blocks all attacks. Such attacks are very effective on an HTTPS-server, as while the HTTP-server skips the queue, the HTTPS-server spends time analyzing the encryption conditions. During this time, such attacks can consume the entire available queue and block server operation.  
