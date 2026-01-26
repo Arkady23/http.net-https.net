@@ -1,7 +1,7 @@
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!                                                     !!
 //!!   https.net сервер на C#.    Автор: A.Б.Корниенко   !!
-//!!   Головной блок              версия от 25.01.2026   !!
+//!!   Головной блок              версия от 26.01.2026   !!
 //!!                                                     !!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -46,12 +46,12 @@ public class f : Form {
                  CT_T=CT+": text/plain\r\n", stopIconText= hs+" is stopped",
                  initCGI= "initcgi.",
            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                 ver="version 1.8.0", verD="January 2026";    //!!
+                 ver="version 1.8.1", verD="January 2026";    //!!
            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public const  int i2=2, i9=2147483647;
     public const  byte b0=0, b1=1, b2=2, b10=10, b13=13;
     public static int i, k, port, post, st, qu, bu, bu0, bu1, bu2, bu3, bu4, bu8, db,
-                  log9, st1, tw, iIP, iIP1, nClients, s9=1000, logi=0;
+                  log9, st1, qu1, tw, iIP, iIP1, nClients, s9=1000, logi=0;
     public static string IP, IP1, DocumentRoot, Folder=Thread.GetDomain().BaseDirectory,
                   DirectoryIndex, Proc, Args, Ext, logZ=string.Empty, DirectorySessions;
     private static string Fullexe = Folder+hn+".exe";
@@ -234,7 +234,8 @@ public class f : Form {
       tw=10000;
       qu=100;
       st=100;
-      st1=4;
+      st1=8;
+      qu1=4;
       db=30;
 
       if(getArgs(args)){
@@ -722,6 +723,12 @@ public class f : Form {
             qu=(k > 0 && k <= q9)? k : q9;
           }            
           break;
+        case "-q1":
+          if(toArg(args)) {
+            k=valInt(args[i]);
+            qu1= k > 0? k : 1;
+          }
+          break;
         case "-s":
           if(toArg(args)){
             k=valInt(args[i]);
@@ -729,7 +736,10 @@ public class f : Form {
           }            
           break;
         case "-s1":
-          if(toArg(args)) st1=valInt(args[i]);
+          if(toArg(args)) {
+            k=valInt(args[i]);
+            st1= k > 0? k : 1;
+          }
           break;
         case "-n":
           if(toArg(args)){
@@ -828,10 +838,11 @@ Parameters:                                                                  Val
              folder and in the root folder containing the domains.
      -p      Port that the server is listening on.                               "+port.ToString()+@"
      -b      Size of read/write buffers.                                         "+bu.ToString()+@"
+     -q      Allowable number of requests in the queue.                          "+qu.ToString()+@"
+     -q1     Allowed number of requests in the queue per IP.                     "+qu1.ToString()+@"
      -s      Number of requests being processed at the same time. Maximum        "+st.ToString()+@"
              value is "+s9.ToString()+@".
-     -s1     The number of allowed wait threads per IP address.                  "+st1.ToString()+@"
-     -q      Number requests stored in the queue.                                "+qu.ToString()+@"
+     -s1     Allowed number of simultaneously processed requests per IP.         "+st1.ToString()+@"
      -w      Allowed time to reserve an open channel for request that did not    "+(tw/1000).ToString()+@"
              started. From 1 to "+t9.ToString()+@" seconds.
      -n      Maximum number of dynamically running interpreters or MS VFP        "+db.ToString()+@"
