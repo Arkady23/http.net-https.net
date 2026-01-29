@@ -27,7 +27,7 @@ USAGE:
     spaces, then it must be enclosed in quotation marks. You can also specify the parameters
     string in the http.net.xml file in the <Arguments></Arguments> section.
 
-Parameters:                                                                  Default values:
+Parameters:                                                                  Values:
      -d      Folder containing the domains.                                      ../www/
      -i      Main document is in the folder. The main document in the            index.html
              folder specified by the -d parameter is used to display the page
