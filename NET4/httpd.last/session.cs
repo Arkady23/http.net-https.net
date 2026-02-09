@@ -19,10 +19,10 @@ using System.Collections.Generic;
 namespace http2 {
 
   public class Session {
-    int i, j, k, m, i1, i2, k1, len, eof, Content_Length, n1, n2, nbuf;
+    int i, j, k, m, i1, m1, i2, k1, len, eof, Content_Length, n1, n2, nbuf;
     string h1, reso, res, head, Host, Content_Type, Content_T, IP, jt,
            Content_Disposition, QUERY_STRING, dirname, filename, prg,
-           fullprg, x1, x2;
+           fullprg, x1;
     Queue<string> heads = new Queue<string>();
     byte[] buf = new byte[f.bu];
     NetworkStream stream;
@@ -37,7 +37,8 @@ namespace http2 {
     long nf;                    // Длина посылаемого файла/потока
     bool l;                     // false, если заголовки прочитаны
     Task t;                     // Задачи ввода-вывода
-    Task<int> ti;               //
+    Task<int> ti;               // Задача контроля ожидания
+    Task<bool> ts;              // Задача запуска обработчика
 
     public Session(int j) {
       jt = (j).ToString();
@@ -49,28 +50,28 @@ namespace http2 {
     void Init() {
 
       // Подготовка переменных по максимуму
-      if(filename.Length>0) {
+      if(filename.Length>f.i0) {
         if(Directory.Exists(dirname)) Directory.Delete(dirname,true);
         dirname=filename= string.Empty;
       }
 
       // Если клиентов много, то сбрасываем счетчики DoS-атак, только если другой IP.
       // А если клиентов больше нет, то сбрасывает счетчик DoS-атаки f.iIP1.
-      if(f.nClients>1) {
+      if(f.nClients>f.i1) {
         Interlocked.Decrement(ref f.nClients);
         if(f.IP != IP) {
-          Interlocked.Exchange(ref f.iIP,0);
-          Interlocked.Exchange(ref f.iIP1,0);
+          Interlocked.Exchange(ref f.iIP,f.i0);
+          Interlocked.Exchange(ref f.iIP1,f.i0);
         }
       } else {
-        if(f.IP != IP) Interlocked.Exchange(ref f.iIP,0);
-        Interlocked.Exchange(ref f.nClients,0);
-        Interlocked.Exchange(ref f.iIP1,0);
+        if(f.IP != IP) Interlocked.Exchange(ref f.iIP,f.i0);
+        Interlocked.Exchange(ref f.nClients,f.i0);
+        Interlocked.Exchange(ref f.iIP1,f.i0);
       }
 
       head=h1=res=reso=Host=Content_T=Content_Type=Content_Disposition=QUERY_STRING=string.Empty;
       UTF = Encoding.GetEncoding(f.UTF8);
-      eof = len = i2 = Content_Length = 0;
+      eof = len = i2 = Content_Length = f.i0;
       k = k1 = n1 = f.bu1;                  // Смещение для чтения 1-ой части заголовков
       f.IP = f.IP1 = IP;                    // Предыдущий IP для сравнения на выходе и входе
       fs = file1 = null;                    // Освободить объекты
@@ -114,7 +115,7 @@ namespace http2 {
           sRead();                   // Читаем во вторую четверть буфера
           while (l) {
             sReadAsync();            // Читаем асинхронно
-            if(i>0) {
+            if(i>f.i0) {
               len += i;
               getHeaders();
             } else {
@@ -123,22 +124,22 @@ namespace http2 {
           }
 
           // Заголовки прочитали, фомируем ответ
-          if(R>f.b0 && eof==0) {
-            n1 = 0;
+          if(R>f.b0 && eof==f.i0) {
+            n1 = f.i0;
             n2 = f.bu2;
             nbuf = f.bu8;
             if(R>f.b1) {
               putHead(true);
               if(R1>f.b0 || File.Exists(res)) {
-                x2 = f.valStr(ref Content_Type,"charset");
-                if(x2.Length>0 && !String.Equals(x2,f.UTF8,
+                x1 = f.valStr(ref Content_Type,"charset");
+                if(x1.Length>f.i0 && !String.Equals(x1,f.UTF8,
                       StringComparison.CurrentCultureIgnoreCase)) {
-                  try { UTF = Encoding.GetEncoding(x2); } catch(Exception) { }
+                  try { UTF = Encoding.GetEncoding(x1); } catch(Exception) { }
                 }
                 if(R==f.b2) {
-                  send_cgi();
+                  await send_cgi();
                 } else {
-                  send_prg();
+                  await send_prg();
                 }
               }
             } else {
@@ -159,7 +160,7 @@ namespace http2 {
               if(R==f.b1) type();
             }
           } else {
-            if(res.Length>0) {
+            if(res.Length>f.i0) {
               res+=" -";
               failure("403 Forbidden");
 
@@ -172,10 +173,9 @@ namespace http2 {
         }
         clientClose();
 
-        if(res.Length>1 && f.log9>0) {
+        if(res.Length>f.i1 && f.log9>f.i0) {
           n = DateTime.UtcNow.Subtract(dt1).TotalMilliseconds;
-          x1 = (n>9999?"****" : n.ToString("0000"));
-          f.log2("/"+x1+" "+IP+" "+jt+"\t"+res);
+          f.log2("/"+(n>9999?"****" : n.ToString("0000"))+" "+IP+" "+jt+"\t"+res);
         }
 
         Init();
@@ -216,21 +216,21 @@ namespace http2 {
 
     string line1() {
       string z = string.Empty;
-      if(len>0) {
+      if(len>f.i0) {
         i = Array.IndexOf(buf,f.b10,k,len);
-        if(i >= 0) {
-          if(i>0 && buf[i-1]==f.b13) {
-            m = i-k-1;
-            len -= m+2;
+        if(i >= f.i0) {
+          if(i>f.i0 && buf[i-f.i1]==f.b13) {
+            m1 = i-k-f.i1;
+            len -= m1+f.i2;
           } else {
-            m = i-k;
-            len -= m+1;
+            m1 = i-k;
+            len -= m1+f.i1;
           }
-          z += UTF.GetString(buf,k,m);
-          k = i+1;
+          z += UTF.GetString(buf,k,m1);
+          k = i+f.i1;
         }
       }
-      l = z.Length>0;
+      l = z.Length>f.i0;
       return z;
     }
 
@@ -241,13 +241,36 @@ namespace http2 {
 // f.log2(" "+lin);
         h = f.afterStr1(ref lin,":");
         h = f.ltri(ref h);
-        if(h.Length>0) {
+        if(h.Length>f.i0) {
           z = f.beforStr1(ref lin,":");
           switch(z) {
           case "Host":
             Host = h;
             prepResource();
-            if(R<f.b2) l = false;  // Дальше читать бессмысленно
+            switch (R) {
+            case f.b0:
+            case f.b1:
+              l = false;  // Дальше читать бессмысленно
+              break;
+            case f.b2:
+              m = -f.i1;
+              if(f.cgia) {
+                try{
+                  m = f.freeCGI.Pop();
+                  ts = f.start_CGI(m);
+                } catch(Exception) { }
+              }
+              break;
+            case f.b3:
+              m = -f.i1;
+              if(f.vfpa != null) {
+                try{
+                  m = f.freeVFP.Pop();
+                  ts = f.start_VFP(m);
+                } catch(Exception) { }
+              }
+              break;
+            }
             break;
           case f.CT:
             Content_Type = h;
@@ -256,20 +279,20 @@ namespace http2 {
             Content_Disposition = h;
             break;
           case f.CL:
-            try { Content_Length = int.Parse(h); } catch(Exception) { Content_Length = 0; }
+            try { Content_Length = int.Parse(h); } catch(Exception) { Content_Length = f.i0; }
             break;
           }
           heads.Enqueue(z);
           heads.Enqueue(h);
         } else {
           i = lin.IndexOf(" ");
-          if(i > 0) {
-            z = lin.Substring(0,i);
+          if(i > f.i0) {
+            z = lin.Substring(f.i0,i);
             if(z=="GET" || z=="POST" || z=="PUT") {
-              h = lin.Substring(i+1);
+              h = lin.Substring(i+f.i1);
               h = f.ltri(ref h);
               i = h.IndexOf(" ");
-              if(i > 0) reso = h.Substring(0,i);
+              if(i > f.i0) reso = h.Substring(f.i0,i);
             }
           }
         }
@@ -285,7 +308,7 @@ namespace http2 {
 
     void prepResource() {
       string sub,ext = ".";
-      if(reso.Length==0) {
+      if(reso.Length==f.i0) {
         R = f.b0;
       } else {
         res = HttpUtility.UrlDecode(reso);
@@ -294,12 +317,12 @@ namespace http2 {
         sub = f.beforStr1(ref Host,":");
 
         // ".." в запроах недопустимы в целях безопасности
-        if(res.IndexOf("..")<0){
+        if(res.IndexOf("..")<f.i0){
 
           if(res.EndsWith("/")) res += f.DirectoryIndex;
           reso = f.afterStr9(ref res,"/");
           ext = f.afterStr9(ref reso,ext);
-          if(ext.Length==0){
+          if(ext.Length==f.i0){
             reso = f.DocumentRoot+sub+res+".";
             if(File.Exists(reso+f.Ext)) {
               R1 = f.b1;      // Случай API
@@ -369,8 +392,8 @@ namespace http2 {
 
     void failure(string s) {
       string z = f.H1+s+"\r\n";
-      i = UTF.GetBytes(z,0,z.Length,buf,0);
-      stream.Write(buf,0,i);
+      i = UTF.GetBytes(z,f.i0,z.Length,buf,f.i0);
+      stream.Write(buf,f.i0,i);
     }
 
     // Чтение данных синхронно с ожиданием f.tw мс
@@ -379,14 +402,14 @@ namespace http2 {
          ti = stream.ReadAsync(buf, k1, nbuf);
        } catch(Exception) {
          l = false;                            // достигнут конец потока
-         eof = -1;
+         eof = -f.i1;
        }
     }
 
     // Запись данных POST синхронно
     void sWrite(byte b) {
       switch(b) {
-      case 2:
+      case f.b2:
         f.proc[m].StandardInput.BaseStream.Write(buf,k,i);
         break;
       case 3:
@@ -410,11 +433,11 @@ namespace http2 {
           i = await ti;
           ti = stream.ReadAsync(buf, k1, nbuf);   // минимальный размер буфера из всех половинок
         } else {
-          i = -1;
+          i = -f.i1;
         }
       } catch(Exception) {
         l = false;                                // достигнут конец потока
-        eof = -1;
+        eof = -f.i1;
       }
     }
 
@@ -424,13 +447,13 @@ namespace http2 {
       fs = File.OpenRead(res);
       nf = fs.Length;
       head += nf+"\r\n\r\n";
-      i = UTF.GetBytes(head, 0, head.Length, buf, n1);
+      i = UTF.GetBytes(head, f.i0, head.Length, buf, n1);
       i2 = fs.Read(buf, i, nbuf-i);            // Заполнить первую половину буфера синхронно
       t = stream.WriteAsync(buf, n1, i2+i);    // Асинхронно записать в поток
       k = n2;
       while (i2<nf) {
         i = fs.Read(buf, k, nbuf);             // Синхронно прочитать
-        if(i>0) {
+        if(i>f.i0) {
           t.Wait();
           t = stream.WriteAsync(buf, k, i);
           k = k==n1? n2 : n1;
@@ -445,9 +468,9 @@ namespace http2 {
 
     bool filename2(){
       filename=f.valStr(ref Content_Disposition,"filename");
-      if(filename.Length>0 || Content_Length>f.post){
+      if(filename.Length>f.i0 || Content_Length>f.post){
         dirname=f.DirectorySessions+"/"+IP+"_"+point.Port.ToString();
-        if(filename.Length==0) filename=DateTime.Now.ToString("HHmmssfff");
+        if(filename.Length==f.i0) filename=DateTime.Now.ToString("HHmmssfff");
         filename = dirname+"/"+HttpUtility.UrlDecode(filename);
         return true;
       }
@@ -458,7 +481,7 @@ namespace http2 {
     void res_start(){
       reso = res+"\nSCRIPT_FILENAME:"+f.fullres(ref res)+"\nQUERY_STRING:"+
              QUERY_STRING+"\nREMOTE_ADDR:"+IP;
-      while (heads.Count>1) reso += "\n"+heads.Dequeue()+":"+heads.Dequeue();
+      while (heads.Count>f.i1) reso += "\n"+heads.Dequeue()+":"+heads.Dequeue();
       f.proc[m].StandardInput.WriteLine(reso.Length.ToString()+"\n"+reso);
     }
 
@@ -471,12 +494,12 @@ namespace http2 {
           // Читаем асинхронно, первый буфер был прочитан при чтении заголовков
           sReadAsync();
 
-          if(i>0) {
+          if(i>f.i0) {
             i += len;
             i2 += i;
             sWrite(b);  // Пишем синхронно
             l = i2<Content_Length;
-            len = 0;
+            len = f.i0;
             k = k1;
           } else {
             l = false;
@@ -498,34 +521,28 @@ namespace http2 {
         Directory.CreateDirectory(dirname);
       }
       file1 = new FileStream(filename,FileMode.Create);
-      send_stream(0);
+      send_stream(f.i0);
       if(file1.CanRead) file1.Close();
     }
 
-    void send_cgi() {
-      m = -1;
+    async Task send_cgi() {
       fullprg = f.fullres(ref res);
-
-      // Извлечь свободный номер CGI
-      if(f.cgia) {
-        try{
-          m = f.freeCGI.Pop();
-          if(f.cgib[m]==f.b0) f.start_CGI(m);
-          f.cgib[m] = f.b2;
-        } catch(Exception) {
-          m = f.db;
-        }
-      }
-      if(m < 0) {
+      if(m < f.i0) {
 
         // Вывести сообщение об отсутствии интерпретатора
         send_prg1("There is no \""+f.Proc+"\" on the server :(");
         return;
+      }
 
-      } else if(m >= f.db) {
+      try{
+        if(await ts) m = f.db;
+      } catch(Exception) {
+        m = f.db;
+      }
+      if(m >= f.db) {
 
         // Вывести сообщение, что все доступные процессы интерпретатора заняты
-        send_prg1("All "+f.db.ToString()+"\""+f.Proc+"\" processes are busy :(");
+        send_prg1("All "+f.db.ToString()+" \""+f.Proc+"\" processes are busy :(");
         return;
       }
 
@@ -547,13 +564,13 @@ namespace http2 {
       }
       f.proc[m].StandardInput.Close();
 
-      if(eof==0) {      // Если нет разрыва связи
+      if(eof==f.i0) {      // Если нет разрыва связи
 
         // Вывод полученных данных cgi-скрипта
         reso = f.OK+head;
 
         // Помещаем заголовок в буфер с позиции n2
-        k = UTF.GetBytes(reso, 0, reso.Length, buf, n2);
+        k = UTF.GetBytes(reso, f.i0, reso.Length, buf, n2);
 
         i1 = nbuf-k;    // До конца буфера осталось
 
@@ -570,7 +587,7 @@ namespace http2 {
                 i++;
                 reso = f.H1+UTF.GetString(buf,k1,i-k1)+head;
                 k1 = i-UTF.GetByteCount(reso);
-                UTF.GetBytes(reso,0,reso.Length,buf,k1);
+                UTF.GetBytes(reso,f.i0,reso.Length,buf,k1);
                 i1 += n2-k1;
              } else {
                 k1 = n2;
@@ -583,21 +600,21 @@ namespace http2 {
         }
 
         i1 += k;
-        while (i1>0) {
+        while (i1>f.i0) {
           t = stream.WriteAsync(buf, k1, i1);  // Асинхронно записать в поток
           k1 = k1<n2? n2 : n1;                 // Следующее начало буфера
           i1 = f.proc[m].StandardOutput.BaseStream.Read(buf, k1, nbuf);
           t.Wait();
         }
       }
-      f.clear_cgi(m);
+      await f.clear_cgi(m);
     }
 
     // Вывод текстового сообщения длиной до 1 буфера
     void send_prg1(string s) {
       string z = f.OK+head+f.CT_T+"\r\n"+s;
-      i = UTF.GetBytes(z,0,z.Length,buf,0);
-      stream.Write(buf,0,i);
+      i = UTF.GetBytes(z,f.i0,z.Length,buf,f.i0);
+      stream.Write(buf,f.i0,i);
     }
 
     // Прочитать i1 символов начиная с i2 в buf начиная с k1
@@ -606,49 +623,35 @@ namespace http2 {
       if(i2>Content_Length) i1 -= i2-Content_Length;
 
       // Файлы выводятся только с таким кодированием
-      f.vfpw.GetBytes(f.vfp[m].Eval("STD_IO.Read("+i1+")"), 0, i1, buf, k1);
+      f.vfpw.GetBytes(f.vfp[m].Eval("STD_IO.Read("+i1+")"), f.i0, i1, buf, k1);
     }
 
-    void send_prg() {
-      m = -1;
-      fullprg = f.fullres(ref res);
-      prg = f.afterStr9(ref res,"/");
+    async Task send_prg() {
+      prg=f.afterStr9(ref res,"/");
+      fullprg=f.fullres(ref res);
+      if(m < f.i0) {
 
-      // Извлечь свободный номер БД
-      if(f.vfpa != null) {
-        try{
-          m = f.freeVFP.Pop();
-          if(f.vfpb[m]==f.b0) f.start_VFP(m);
-          f.vfpb[m] = f.b2;
-        } catch(Exception) {
-          m = f.db;
-        }
+        // Вывести сообщение об отсутствии VFP в реестре
+        send_prg1("MS VFP is missing in the Windows registry :(");
+        return;
       }
 
-      if(m < 0) {
+      if(await ts) {
+        try{ f.start_VFP3(ref m); }
+        catch(Exception) { m = f.db; }
+      }
+      if(m >= f.db) {
+
         // Вывести сообщение об отсутствии VFP в реестре
         send_prg1("MS VFP is missing in the Windows registry :(");
         return;
 
-      } else if(m >= f.db) {
-        // Вывести сообщение, что все процессы VFP заняты
-        send_prg1("All "+f.db.ToString()+" VFP processes are busy :(");
-        return;
-
       } else {
-
-        try {
-          f.vfp[m].SetVar("ERROR_MESS",string.Empty);
-        } catch(System.Runtime.InteropServices.COMException) {
-          f.start_VFP(m);
-        }
-        f.vfp[m].DoCmd("on erro ERROR_MESS='ERROR: '+MESSAGE()+' IN: '+MESSAGE(1)");
         f.vfp[m].DoCmd("SET DEFA TO (\""+f.beforStr9(ref fullprg,"/")+"\")");
-        f.vfp[m].SetVar("SERVER_PROTOCOL",f.Protocol);
         f.vfp[m].SetVar("QUERY_STRING",QUERY_STRING);
         f.vfp[m].SetVar("SCRIPT_FILENAME",fullprg);
         f.vfp[m].SetVar("REMOTE_ADDR",IP);
-        while (heads.Count>1) f.vfp[m].SetVar("_"+heads.Dequeue().Replace("-","_")+
+        while (heads.Count>f.i1) f.vfp[m].SetVar("_"+heads.Dequeue().Replace("-","_")+
               "_",heads.Dequeue());
         if(filename2()) {     // Определяем и проверяем наличие имя файла для POST-данных
           f.vfp[m].SetVar("POST_FILENAME",f.Folder+filename);
@@ -657,7 +660,7 @@ namespace http2 {
           f.vfp[m].SetVar("POST_FILENAME",filename);
           send_stream(R);     // Записываем в STD_IO в VFP
         }
-        if(eof < 0) {         // Если обнаружен разрыв связи
+        if(eof < f.i0) {         // Если обнаружен разрыв связи
           f.clear_prg(m);
           return;
         }
@@ -672,18 +675,18 @@ namespace http2 {
           var ret = f.vfp[m].Eval(prg+"()");
           if(ret.GetType().Name=="String")
              if(ret.Length>5) {
-               i = f.valInt(ret.Substring(0,4));
+               i = f.valInt(ret.Substring(f.i0,4));
                if(i>=100 && i<=599) head = f.H1+ret+"\r\n";
           }
         }
         Content_Length = f.vfp[m].Eval("STD_IO.LenStream()");
       }catch(Exception e){
         head=f.OK+head+f.CT_T+"\r\nError in VFP: "+e.Message;
-        Content_Length = 0;
+        Content_Length = f.i0;
       }
 
       // Начальная позиция в STD_IO
-      i2 = 0;
+      i2 = f.i0;
 
       // Помещаем заголовок в буфер
       k = UTF.GetBytes(head,i2,head.Length,buf,n2);

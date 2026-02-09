@@ -1,7 +1,7 @@
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!                                                     !!
 //!!   http.net сервер на C#.     Автор: A.Б.Корниенко   !!
-//!!   Головной блок              версия от 25.01.2026   !!
+//!!   Головной блок              версия от 09.02.2026   !!
 //!!                                                     !!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -45,12 +45,12 @@ public class f : Form {
                  CT_T=CT+": text/plain\r\n", stopIconText= hs+" is stopped",
                  initCGI= "initcgi.",
            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                 ver="version 3.8.1", verD="January 2025";    //!!
+                 ver="version 3.8.2", verD="February 2026";   //!!
            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    public const  int i2=2, i9=2147483647;
-    public const  byte b0=0, b1=1, b2=2, b10=10, b13=13;
-    public static int i, k, port, post, st, qu, bu, bu0, bu1, bu2, bu3, bu4, bu8, db, tw,
-                  log9, st1, qu1, iIP, iIP1, nClients, s9=1000, logi=0;
+    public const  int i0=0, i1=1, i2=2, i9=2147483647;
+    public const  byte b0=0, b1=1, b2=2, b3=3, b10=10, b13=13;
+    public static int i, k, port, post, st, qu, bu, bu0, bu1, bu2, bu3, bu4, bu8, db,
+                  log9, st1, qu1, tw, iIP, iIP1, nClients, s9=1000, logi=i0;
     public static string IP, IP1, DocumentRoot, Folder=Thread.GetDomain().BaseDirectory,
                   DirectoryIndex, Proc, Args, Ext, logZ=string.Empty, DirectorySessions;
     private static string Fullexe = Folder+hn+".exe";
@@ -137,15 +137,15 @@ public class f : Form {
       // Initialize menu
       this.menu.MenuItems.AddRange( new MenuItem[] {this.menuR,this.menuS,this.menuF,this.menuQ});
 
-      this.menuR.Index = 0;
+      this.menuR.Index = i0;
       this.menuR.Text = "R&eload";
       this.menuR.Click += new EventHandler(this.menuR_Click);
 
-      this.menuS.Index = 1;
+      this.menuS.Index = i1;
       this.menuS.Text = "S&tart";
       this.menuS.Click += new EventHandler(this.menuS_Click);
 
-      this.menuF.Index = 2;
+      this.menuF.Index = i2;
       this.menuF.Text = "F&inalize";
       this.menuF.Click += new EventHandler(this.menuF_Click);
 
@@ -212,7 +212,7 @@ public class f : Form {
       }
     }
 
-    private void RunServer(string[] args){
+    private async void RunServer(string[] args){
 
       // Установить значения сервера по умолчанию
       DirectorySessions="Sessions";
@@ -221,7 +221,7 @@ public class f : Form {
       DirectoryIndex=DI;
       Args=string.Empty;
       post=33554432;
-      iIP=iIP1=0;
+      iIP=iIP1=i0;
       IP=IP1="-";
       log9=10000;
       port=8080;
@@ -236,13 +236,13 @@ public class f : Form {
 
       if(getArgs(args)){
         if(notQuit) {
-          if(Args.Length>0) Args+=" ";
+          if(Args.Length>i0) Args+=" ";
 
           // Создать стек индексов клиентов с симофорным контролем максимального значения
-          maxNumberAcceptedClients = new Semaphore(st-2,st-2);
+          maxNumberAcceptedClients = new Semaphore(st-i2,st-i2);
           freeClientsPool = new Stack<int>(st);
           // Заполнить стек клиентов индексами
-          for (i=0; i<st; i++) freeClientsPool.Push(i);
+          for (i=i0; i<st; i++) freeClientsPool.Push(i);
 
           // Разделить буфер для ускорения чтения
           bu4 = bu/4;
@@ -250,33 +250,36 @@ public class f : Form {
           bu2 = bu1+bu4;
           bu3 = bu2+bu4;
           bu8 = bu4+bu4;
-          bu0 = bu - 1;
+          bu0 = bu - i1;
+
+          // Общая длина очереди
+          try { qu *= st; } catch(Exception) { qu = i9; };
 
           // Создать объекты сессий предварительно очистив сессии от предыдущих запусков
           nClients = st;                    // Начальное число соединений
           ThreadPool.SetMinThreads(st,st);
           session = new Session[st];
           try{
-            Parallel.For(0,st,j => { session[j] = new Session(j); });
+            Parallel.For(i0,st,j => { session[j] = new Session(j); });
             notExit=true;
           }catch(Exception){
-            if(log9>0) log("\tThere were problems when creating threads. Try updating Windows.");
+            if(log9>i0) log("\tThere were problems when creating threads. Try updating Windows.");
           }
         }
         if(notExit) {
 
           // Запустить экземпляр CGI
+          cgib = new byte[db];
           proc = new Process[db];
           cgi = new ProcessStartInfo[db];
-          cgia = start_CGI(0);
+          cgia = ! await start_CGI(i0);
           if(cgia) {
 
             // Свободные номера просессов для CGI
             freeCGI = new Stack<int>(db);
-            for (i=db; i>0; ) freeCGI.Push(--i);
+            for (i=db; i>i0; ) freeCGI.Push(--i);
 
-            cgib = new byte[db];
-            cgib[0] = b1;
+            cgib[i0] = b1;
           } else {
             log("\tThe \""+Proc+("\" interpreter or\r\n".PadRight(41))+
                 "\tthe \""+DocumentRoot+initCGI+Ext+"\" script could not be run.");
@@ -289,31 +292,29 @@ public class f : Form {
             vfp = new dynamic[db];
             vfpb = new byte[db];
             try{
-              vfp[0] = Activator.CreateInstance(vfpa);
+              vfp[i0] = Activator.CreateInstance(vfpa);
             }catch(Exception){
               vfpa = null;
             }
             if(vfpa!=null){
-              VFP9= vfp[0].Eval("sys(17)")=="Pentium";
-              try {
-                start_VFP2(0);
-              } catch(Exception) {
+              VFP9= vfp[i0].Eval("sys(17)")=="Pentium";
+              if(start_VFP2(i0)) {
                 log("\tCOM server 'VFP.memlib"+(VFP9?"32'":"'")+" is not registered in Windows registry.");
                 vfpa = null;
               }
             }
             if(vfpa!=null){
-              vfpb[0] = b1;
+              vfpb[i0] = b1;
 
               // Не уверен, что это будет правильно. Пока придерживаюсь версии,
               // что только Windows-1251 может кодировать двоичные данные.
               // Поэтому вывел эту кодировку на глобальный уровень доступности.
               //vfpw=Encoding.GetEncoding(vfp[0].Eval("CPCURRENT()"));
-              VFPclr=vfp[0].Eval("file("+CLR+")");
+              VFPclr=vfp[i0].Eval("file("+CLR+")");
 
               // Свободные номера баз данных
               freeVFP = new Stack<int>(db);
-              for (i=db; i>0; ) freeVFP.Push(--i);
+              for (i=db; i>i0; ) freeVFP.Push(--i);
             }
           }
 
@@ -330,7 +331,7 @@ public class f : Form {
             // Отобразить значок работы
             nIcon.Icon = ico;  // SystemIcons.Shield;
             nIcon.Text = hs+" is running";
-            if(log9>0) log("\tThe "+hs+" "+ver+" is running.");
+            if(log9>i0) log("\tThe "+hs+" "+ver+" is running.");
 
           } else {
             notExit = false;   // Отметить для возможности снятия, т.к. сервер запущен
@@ -364,7 +365,7 @@ public class f : Form {
         ser = null;
 
         // Закрыть все процессы интерпретатора
-        if(cgia) for(i=0; i<db; i++) if(cgib[i]>b0)
+        if(cgia) for(i=i0; i<db; i++) if(cgib[i]>b0)
                  try{ f.proc[i].StandardInput.WriteLine(string.Empty); }
                  catch(Exception) { }
         proc = null;
@@ -372,7 +373,7 @@ public class f : Form {
         cgi = null;
 
         // Закрыть все процессы VFP
-        if(vfpa != null) for(i=0; i<db; i++) if(vfpb[i]>b0)
+        if(vfpa != null) for(i=i0; i<db; i++) if(vfpb[i]>b0)
                 try{ vfp[i].Quit(); }catch(Exception){ }
         vfpb = null;
         vfpa = null;
@@ -381,7 +382,7 @@ public class f : Form {
         // Отобразить значок выключения
         this.StopIcon();
 
-        if(log9>0) log("\tThe "+hs+" is stopped.");
+        if(log9>i0) log("\tThe "+hs+" is stopped.");
       }
       if(!notQuit) this.Close();
     }
@@ -395,44 +396,44 @@ public class f : Form {
     }
 
     public static string beforStr1(ref string x, string Str){
-      int k=0;
-      if(Str.Length>0) k=x.IndexOf(Str);
-      return k<0?x:(k>0?x.Substring(0,k):string.Empty);
+      int k=i0;
+      if(Str.Length>i0) k=x.IndexOf(Str);
+      return k<i0?x:(k>i0?x.Substring(i0,k):string.Empty);
     }
 
     public static string afterStr1(ref string x, string Str){
-      if(Str.Length>0){
+      if(Str.Length>i0){
         int k=x.IndexOf(Str,StringComparison.OrdinalIgnoreCase);
-        return k<0?string.Empty:x.Substring(k+Str.Length);
+        return k<i0?string.Empty:x.Substring(k+Str.Length);
       }else{
         return x;
       }
     }
 
     public static string beforStr9(ref string x, string Str){
-      if(Str.Length>0){
+      if(Str.Length>i0){
          int k=x.LastIndexOf(Str);
-         return k<0?x:(k>0?x.Substring(0,k):string.Empty);
+         return k<i0?x:(k>i0?x.Substring(i0,k):string.Empty);
       }else{
          return x;
       }
     }
 
     public static string afterStr9(ref string x, string Str){
-      int k= -1;
-      if(Str.Length>0) k=x.LastIndexOf(Str);
-      return k<0?string.Empty:x.Substring(k+Str.Length);
+      int k= -i1;
+      if(Str.Length>i0) k=x.LastIndexOf(Str);
+      return k<i0?string.Empty:x.Substring(k+Str.Length);
     }
 
     // Узнать значение поля в заголовке (может понадобиться при разборе заголовков)
     public static string valStr(ref string x, string Str){
       string z=string.Empty;
-      if(x.Length>0){
+      if(x.Length>i0){
         z=afterStr1(ref x," "+Str+"=");
-        if(z.Length==0) z=afterStr1(ref x,";"+Str+"=");
-        if(z.Length>0){
-          if(z.Substring(0,1)=="\""){
-            z=z.Substring(1);
+        if(z.Length==i0) z=afterStr1(ref x,";"+Str+"=");
+        if(z.Length>i0){
+          if(z.Substring(i0,i1)=="\""){
+            z=z.Substring(i1);
             z=beforStr1(ref z,"\"");
           }else{
             z=beforStr1(ref z,";");
@@ -448,7 +449,7 @@ public class f : Form {
 
       // Нужно ли начать запись в другой журнал?
       if(logi>=log9 && logFS!=null){
-        Interlocked.Exchange(ref logi,1);
+        Interlocked.Exchange(ref logi,i1);
         logZ = (logY==logZ)? logX:logY;
         logSW.Close();
         logFS.Close();
@@ -469,7 +470,7 @@ public class f : Form {
         logSW.Flush();
         logFS.Flush();
       }catch(ObjectDisposedException){
-        log9 = 0;
+        log9 = i0;
       }catch(Exception){
         Thread.Sleep(23); log2(x+" *");
       }
@@ -483,7 +484,7 @@ public class f : Form {
     }
 
     public static void log2(string x){
-      if(log9>0){
+      if(log9>i0){
         Thread log2 = new Thread(log);
         log2.Priority = ThreadPriority.BelowNormal;
         log2.Start(x);
@@ -497,53 +498,77 @@ public class f : Form {
     }
 
     // Запуск скрипта initCGI
-    public static bool start_CGI(int i) {
+    public static async Task<bool> start_CGI(int i) {
+      bool l;
+
+      // Чтобы была асинхронность
+      Task t = Task.Run(() => { cgib[i] = b2; });
 
       // Проверим работает ли этот процесс
       try {
-        if( !proc[i].HasExited) {
-           return true;
-        }
-      } catch(Exception) { }
-
-      // Если процесс не работает, то запустим
-      cgi[i] = new ProcessStartInfo();
-      cgi[i].FileName = Proc;
-      cgi[i].CreateNoWindow = true;
-      cgi[i].UseShellExecute = false;
-      cgi[i].RedirectStandardInput = true;
-      cgi[i].RedirectStandardOutput = true;
-      cgi[i].EnvironmentVariables["SERVER_PROTOCOL"] = Protocol;
-      cgi[i].Arguments = Args+" \""+DocumentRoot+initCGI+Ext+"\"";
-      try {
-        proc[i] = Process.Start(cgi[i]);
+        l = proc[i].HasExited;
       } catch(Exception) {
-        return false;
+        l = true;
       }
-      return true;
+
+      if( l ) {
+
+        // Если процесс не работает, то запустим
+        cgi[i] = new ProcessStartInfo();
+        cgi[i].FileName = Proc;
+        cgi[i].CreateNoWindow = true;
+        cgi[i].UseShellExecute = false;
+        cgi[i].RedirectStandardInput = true;
+        cgi[i].RedirectStandardOutput = true;
+        cgi[i].EnvironmentVariables["SERVER_PROTOCOL"] = Protocol;
+        cgi[i].Arguments = Args+" \""+DocumentRoot+initCGI+Ext+"\"";
+        try {
+          proc[i] = Process.Start(cgi[i]);
+          l = false;
+        } catch(Exception) { }
+      }
+      await t;
+      return l;
     }
 
     // Подготовим CGI к новым заданиям
-    public static void clear_cgi(int m) {
-      cgib[m] = start_CGI(m)? b1: b0;
+    public static async Task clear_cgi(int m) {
+      cgib[m] = await start_CGI(m)? b0: b1;
       freeCGI.Push(m);
     }
 
     // Запуск VFP
-    public static void start_VFP(int m) {
-      vfp[m] = Activator.CreateInstance(vfpa);
-      start_VFP2(m);
+    public static async Task<bool> start_VFP(int m) {
+      bool l = vfpb[m]==b0;
+
+      // Чтобы была асинхронность
+      Task t = Task.Run(() => { vfpb[m] = b2; });
+
+      if(l) vfp[m] = Activator.CreateInstance(vfpa);
+      l = start_VFP2(m);
+      await t;
+      return l;
     }
-    public static void start_VFP2(int m) {
+    public static bool start_VFP2(int m) {
+      try {
+        start_VFP3(ref m);
+        return false;
+      } catch(Exception) { }
+      vfp[m] = Activator.CreateInstance(vfpa);
+      return true;
+    }
+    public static void start_VFP3(ref int m) {
+      vfp[m].DoCmd("on erro ERROR_MESS='ERROR: '+MESSAGE()+' IN: '+MESSAGE(1)");
       vfp[m].DoCmd("STD_IO=CreateO('VFP.memlib"+(VFP9?"32')":"')"));
+      vfp[m].SetVar("SERVER_PROTOCOL",Protocol);
+      vfp[m].SetVar("ERROR_MESS",string.Empty);
     }
 
     // Подготовим VFP к новым заданиям
-    public static void clear_prg(int m) {
+    public static async void clear_prg(int m) {
       try{
         if(VFPclr){
           vfp[m].DoCmd("do ("+CLR+")");
-          start_VFP2(m);
         }else{
           vfp[m].DoCmd("STD_IO.CloseAll()");
           vfp[m].DoCmd("clos data all");
@@ -551,16 +576,16 @@ public class f : Form {
           vfp[m].DoCmd("clea prog");
           vfp[m].DoCmd("clea all");
           vfp[m].DoCmd("clos all");
-          start_VFP2(m);
         }
-        vfpb[m] = b1;
+        start_VFP2(m);
+        vfpb[m]=b1;
       }catch(Exception){
-        vfpb[m] = b0;
+        vfpb[m]=b0;
       }
       if(vfpb[m]==b0) {
         try{ vfp[m].Quit(); }catch(Exception){ }
-        start_VFP(m);
-        vfpb[m] = b1;
+        await start_VFP(m);
+        vfpb[m]=b1;
       }
       freeVFP.Push(m);
     }
@@ -580,21 +605,19 @@ public class f : Form {
       ps.FileName = "schtasks";
       ps.CreateNoWindow = true;
       ps.UseShellExecute = false;
-      //ps.RedirectStandardInput = true;
       ps.RedirectStandardOutput = true;
       ps.Arguments = par;
       try {
         Process p = Process.Start(ps);
-        //p.StandardInput.Close();
-        output = Encoding.GetEncoding(866).GetString(buf,0,
-                 p.StandardOutput.BaseStream.Read(buf,0,100));
+        output = Encoding.GetEncoding(866).GetString(buf,i0,
+                 p.StandardOutput.BaseStream.Read(buf,i0,100));
         p.WaitForExit();
         ret = true;
       } catch(Exception) {
         output = "FAILED :-(";
         ret = false;
       }
-      if(output.Length>2) {
+      if(output.Length>i2) {
         nIcon.ShowBalloonTip(6100, "Schtasks command", output,
               ret? ToolTipIcon.Info:ToolTipIcon.Error);
       }
@@ -602,8 +625,8 @@ public class f : Form {
     }
 
     int odd(string z) {
-      return (z.Length - z.Replace("'", string.Empty).Length)%2 +
-             (z.Length - z.Replace("\"", string.Empty).Length)%2;
+      return (z.Length - z.Replace("'", string.Empty).Length)%i2 +
+             (z.Length - z.Replace("\"", string.Empty).Length)%i2;
     }
 
     string toStd(string z) {
@@ -616,51 +639,50 @@ public class f : Form {
     }
 
     private bool getArgs(string[] args){
-      const int b9=131072, db9=1000, p9=65535, q9=2147483647, post9=33554432, b0=512,
-                log0=80, t9=20;
+      const int b9=131072, db9=1000, p9=65535, post9=33554432, b0=512, log0=80, t9=20;
       string tx=string.Empty, ts=string.Empty, cA="Arguments>", fn=hn+".xml";
       bool l = true;
       int k1;
 
       // Если введён ключ вида /? или -? или /help или -help
-      if (args.Length==1) l = args[0].Length>9;
+      if (args.Length==i1) l = args[i0].Length>9;
 
       if(File.Exists(fn)) {
-        if(args.Length==0 || !l) {
+        if(args.Length==i0 || !l) {
           tx = File.ReadAllText(fn);
           k = tx.IndexOf("<"+cA,StringComparison.OrdinalIgnoreCase)+11;
           tx = tx.Substring(k, tx.IndexOf("</"+cA,StringComparison.OrdinalIgnoreCase)-k).
                Replace("\t", " ").Replace("\r"," ").Replace("\n"," ").Trim();
-          k1 = k = 0;
+          k1 = k = i0;
           while (k<tx.Length) {
             i = tx.IndexOf(" ", k);
-            if(i<0) {
+            if(i<i0) {
               k = tx.Length;
             } else {
-              if(odd(tx.Substring(k1, i-k1))==0) {
+              if(odd(tx.Substring(k1, i-k1))==i0) {
                 if(i>k) {
-                  tx = tx.Substring(0,i)+"\t"+tx.Substring(i+1);
+                  tx = tx.Substring(i0,i)+"\t"+tx.Substring(i+i1);
                 } else {
-                  tx = tx.Substring(0,i)+tx.Substring(i+1);
+                  tx = tx.Substring(i0,i)+tx.Substring(i+i1);
                   i--;
                 }
-                k1 = i+1;
+                k1 = i+i1;
               }
-              k = i+1;
+              k = i+i1;
             }
           }
           args = tx.Split('\t');
-          for (i = 0; i<args.Length; i++) {
-            if (args[i].Length>1) {
-              if (args[i][0]==args[i][args[i].Length-1]) {
-                if (args[i][0]=='"' || args[i][0]=='\'')
-                    args[i] = args[i].Substring(1,args[i].Length-2);
+          for (i = i0; i<args.Length; i++) {
+            if (args[i].Length>i1) {
+              if (args[i][i0]==args[i][args[i].Length-i1]) {
+                if (args[i][i0]=='"' || args[i][i0]=='\'')
+                    args[i] = args[i].Substring(i1,args[i].Length-i2);
               }
             }
           }
         }
         tx=string.Empty;
-      } else if(args.Length>0) {
+      } else if(args.Length>i0) {
         tx = "<?xml version=\"1.0\" encoding=\"UTF-16\"?>"+@"
 <Task version="+"\"1.2\" xmlns=\"http://schemas.microsoft.com/windows/2004/02/mit/task\">"+@"
   <Triggers>
@@ -687,12 +709,12 @@ public class f : Form {
       }
 
       // Разбор параметров
-      for (i = 0; i < args.Length; i++){
+      for (i = i0; i < args.Length; i++){
         switch (args[i]){
         case "-p":
           if(toArg(args)){
             k=valInt(args[i]);
-            if(k > 0 && k <= p9) port=k;
+            if(k > i0 && k <= p9) port=k;
           }
           break;
         case "-b":
@@ -708,13 +730,13 @@ public class f : Form {
         case "-q":
           if(toArg(args)){
             k=valInt(args[i]);
-            qu=(k > 0 && k <= q9)? k : q9;
+            qu=(k > i0)? k : i9;
           }            
           break;
         case "-q1":
           if(toArg(args)) {
             k=valInt(args[i]);
-            qu1= k > 0? k : 1;
+            qu1= k > i0? k : i1;
           }
           break;
         case "-s":
@@ -726,31 +748,31 @@ public class f : Form {
         case "-s1":
           if(toArg(args)) {
             k=valInt(args[i]);
-            st1= k > 0? k : 1;
+            st1= k > i0? k : i1;
           }
           break;
         case "-n":
           if(toArg(args)){
             k=valInt(args[i]);
-            if(k >= 0 && k <= db9) db=k;
+            if(k >= i0 && k <= db9) db=k;
           }            
           break;
         case "-w":
           if(toArg(args)){
             k=valInt(args[i]);
-            tw=((k > 0 && k <= t9)? k : t9)*1000;
+            tw=((k > i0 && k <= t9)? k : t9)*1000;
           }            
           break;
         case "-log":
           if(toArg(args)){
             k=valInt(args[i]);
-            log9=(k < log0)? 0 : k;
+            log9=(k < log0)? i0 : k;
           }            
           break;
         case "-post":
           if(toArg(args)){
             k=valInt(args[i]);
-            post=(k > 0)? k : post9;
+            post=(k > i0)? k : post9;
           }            
           break;
         case "-d":
@@ -771,7 +793,7 @@ public class f : Form {
           break;
         case "/regserver":
           ts = "/create /tn "+hn+" /ru system /xml "+fn;
-          if(tx.Length>0) File.WriteAllText(fn,tx);
+          if(tx.Length>i0) File.WriteAllText(fn,tx);
           i = args.Length;
           notQuit = false;
           break;
@@ -786,7 +808,7 @@ public class f : Form {
         }
       }
 
-      if(ts.Length>0) schtasks(ref ts);
+      if(ts.Length>i0) schtasks(ref ts);
 
       textBox1 = new TextBox()
       {
