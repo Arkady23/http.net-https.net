@@ -16,7 +16,7 @@ The https.net version differs from http.net only by the addition of one addition
 Prg scripts are processed using COM technology and VFP 9/10(Advanced) DBMS, not CGI. COM objects are created as requests from clients are executed. By default, visual error output in VFP 9/10(Advanced) DBMS is disabled. In case of an error in prg, a description of this error is returned to the script in the ERROR_MESS variable. Below is an example of a prg file and the result of its work. And also the result of working with a similar prg file, but with an error (the last line break ";" is missing).
 ```PowerShell
 PS D:\> D:\work\httpd\http.net.exe /?
-Multithreaded http.net server version 3.7.9, (C) a.kornienko.ru December 2025.
+Multithreaded http.net server version 3.8.2, (C) a.kornienko.ru February 2026.
 
 USAGE:
     http.net [Parameter1 Value1] [Parameter2 Value2] ...
@@ -273,3 +273,4 @@ If there is an error in the prg file:
 3.7.9 http.net / 1.7.9 https.net. December 2025. Bug in response header "404 Not Found".  
 3.8.0 http.net / 1.8.0 https.net. January 2026. Adjusting the DOS-attack threshold. They haven't been around for a while.  
 3.8.1 http.net / 1.8.1 https.net. January 2026. Added a fine-tuning parameter, qu1, which affects the blocking of DOS-attacks. Reducing this value to 3 completely blocks all attacks. Such attacks are very effective on an HTTPS-server, as while the HTTP-server skips the queue, the HTTPS-server spends time analyzing the encryption conditions. During this time, such attacks can consume the entire available queue and block server operation.  
+3.8.2 http.net / 1.8.2 https.net. February 2026. A socket queue allocation error was fixed, preventing all server threads from being used. Handler launches are now performed asynchronously with header reading, which should also improve server performance.  
