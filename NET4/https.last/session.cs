@@ -1,7 +1,7 @@
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!                                                         !!
 //!!    https.net сервер на C#.      Автор: A.Б.Корниенко    !!
-//!!    class Session                версия от 09.02.2026    !!
+//!!    class Session                версия от 06.04.2026    !!
 //!!                                                         !!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -104,7 +104,9 @@ namespace https2 {
         try{
           stream = new SslStream(new NetworkStream(client,true),false);
           if (! stream.AuthenticateAsServerAsync(f.cert,false,
-              System.Security.Authentication.SslProtocols.Tls12,false).Wait(200)){
+              (System.Security.Authentication.SslProtocols)12288 |
+               System.Security.Authentication.SslProtocols.Tls12,
+              false).Wait(2000)) {
             stream.Dispose();
             stream = null;
 
@@ -648,7 +650,7 @@ namespace https2 {
       }
 
       if(await ts) {
-        try{ f.start_VFP3(ref m); }
+        try{ f.start_VFP3(m); }
         catch(Exception) { m = f.db; }
       }
       if(m >= f.db) {
@@ -681,13 +683,22 @@ namespace https2 {
       try{
         head = f.OK+head;
         if(R1==f.b0){
-          var ret = f.vfp[m].Eval(f.beforStr9(ref prg,".prg")+"()");
+
+          // Если выполнение prg не закончилось за 25 минут, то аварийно снять процесс
+          if(! Task.Run(() => f.vfp[m].Eval(f.beforStr9(ref prg,".prg")+"()")).Wait(f.i8))
+             f.killVFP(m);
+
         }else{      // Случай API
-          var ret = f.vfp[m].Eval(prg+"()");
-          if(ret.GetType().Name=="String")
-             if(ret.Length>5) {
-               i = f.valInt(ret.Substring(f.i0,4));
-               if(i>=100 && i<=599) head = f.H1+ret+"\r\n";
+          var api= Task.Run(() => f.vfp[m].Eval(f.beforStr9(ref prg,".prg")+"()"));
+          if(api.Wait(f.i8)) {
+            var ret = await api;
+            if(ret.GetType().Name=="String")
+               if(ret.Length>5) {
+                 i = f.valInt(ret.Substring(f.i0,4));
+                 if(i>=100 && i<=599) head = f.H1+ret+"\r\n";
+            }
+          } else {
+            f.killVFP(m);
           }
         }
         Content_Length = f.vfp[m].Eval("STD_IO.LenStream()");
