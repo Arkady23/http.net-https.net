@@ -1,7 +1,7 @@
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!                                                     !!
 //!!   http.net сервер на C#.     Автор: A.Б.Корниенко   !!
-//!!   Головной блок              версия от 09.02.2026   !!
+//!!   Головной блок              версия от 06.04.2026   !!
 //!!                                                     !!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -45,9 +45,9 @@ public class f : Form {
                  CT_T=CT+": text/plain\r\n", stopIconText= hs+" is stopped",
                  initCGI= "initcgi.",
            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                 ver="version 3.8.2", verD="February 2026";   //!!
+                 ver="version 3.9.0", verD="April 2026";      //!!
            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    public const  int i0=0, i1=1, i2=2, i9=2147483647;
+    public const  int i0=0, i1=1, i2=2, i8=1500000, i9=2147483647;
     public const  byte b0=0, b1=1, b2=2, b3=3, b10=10, b13=13;
     public static int i, k, port, post, st, qu, bu, bu0, bu1, bu2, bu3, bu4, bu8, db,
                   log9, st1, qu1, tw, iIP, iIP1, nClients, s9=1000, logi=i0;
@@ -65,6 +65,7 @@ public class f : Form {
     public static byte[] vfpb, cgib;
     public static Type vfpa = null;
     public static Process[] proc;
+    public static int[] vfpi;
 
     protected override void Dispose( bool disposing ) {
       // Clean up any container being used.
@@ -230,8 +231,8 @@ public class f : Form {
       tw=10000;
       qu=100;
       st=100;
-      st1=8;
-      qu1=4;
+      st1=16;
+      qu1=8;
       db=30;
 
       if(getArgs(args)){
@@ -291,8 +292,10 @@ public class f : Form {
           if(vfpa!=null){
             vfp = new dynamic[db];
             vfpb = new byte[db];
+            vfpi = new int[db];
             try{
               vfp[i0] = Activator.CreateInstance(vfpa);
+              vfpb[i0]= b1;
             }catch(Exception){
               vfpa = null;
             }
@@ -300,20 +303,16 @@ public class f : Form {
               VFP9= vfp[i0].Eval("sys(17)")=="Pentium";
               if(start_VFP2(i0)) {
                 log("\tCOM server 'VFP.memlib"+(VFP9?"32'":"'")+" is not registered in Windows registry.");
-                vfpa = null;
+                vfpa= null;
               }
             }
             if(vfpa!=null){
-              vfpb[i0] = b1;
-
-              // Не уверен, что это будет правильно. Пока придерживаюсь версии,
-              // что только Windows-1251 может кодировать двоичные данные.
-              // Поэтому вывел эту кодировку на глобальный уровень доступности.
-              //vfpw=Encoding.GetEncoding(vfp[0].Eval("CPCURRENT()"));
-              VFPclr=vfp[i0].Eval("file("+CLR+")");
+              VFPclr= vfp[i0].Eval("file("+CLR+")");
+              vfpi[i0]= vfp[i0].ProcessID;
+              start_VFP3(i0);
 
               // Свободные номера баз данных
-              freeVFP = new Stack<int>(db);
+              freeVFP= new Stack<int>(db);
               for (i=db; i>i0; ) freeVFP.Push(--i);
             }
           }
@@ -363,6 +362,9 @@ public class f : Form {
         // Остановить движок
         ser.Stop();
         ser = null;
+    
+        // Отобразить значок выключения
+        this.StopIcon();
 
         // Закрыть все процессы интерпретатора
         if(cgia) for(i=i0; i<db; i++) if(cgib[i]>b0)
@@ -377,10 +379,8 @@ public class f : Form {
                 try{ vfp[i].Quit(); }catch(Exception){ }
         vfpb = null;
         vfpa = null;
+        vfpi = null;
         vfp = null;
-    
-        // Отобразить значок выключения
-        this.StopIcon();
 
         if(log9>i0) log("\tThe "+hs+" is stopped.");
       }
@@ -539,25 +539,33 @@ public class f : Form {
 
     // Запуск VFP
     public static async Task<bool> start_VFP(int m) {
-      bool l = vfpb[m]==b0;
 
       // Чтобы была асинхронность
       Task t = Task.Run(() => { vfpb[m] = b2; });
 
-      if(l) vfp[m] = Activator.CreateInstance(vfpa);
-      l = start_VFP2(m);
+      bool l = start_VFP2(m);
       await t;
       return l;
     }
+
     public static bool start_VFP2(int m) {
+      if(vfpb[m]!=b0) {
+        try {
+          start_VFP3(m);
+          return false;
+        } catch(Exception) { }
+      }
+
       try {
-        start_VFP3(ref m);
+        vfp[m]= Activator.CreateInstance(vfpa);
+        vfpi[m]= vfp[m].ProcessID;
+        start_VFP3(m);
         return false;
       } catch(Exception) { }
-      vfp[m] = Activator.CreateInstance(vfpa);
       return true;
     }
-    public static void start_VFP3(ref int m) {
+
+    public static void start_VFP3(int m) {
       vfp[m].DoCmd("on erro ERROR_MESS='ERROR: '+MESSAGE()+' IN: '+MESSAGE(1)");
       vfp[m].DoCmd("STD_IO=CreateO('VFP.memlib"+(VFP9?"32')":"')"));
       vfp[m].SetVar("SERVER_PROTOCOL",Protocol);
@@ -583,7 +591,7 @@ public class f : Form {
         vfpb[m]=b0;
       }
       if(vfpb[m]==b0) {
-        try{ vfp[m].Quit(); }catch(Exception){ }
+        try { vfp[m].Quit(); } catch(Exception) { }
         await start_VFP(m);
         vfpb[m]=b1;
       }
@@ -594,6 +602,12 @@ public class f : Form {
     public static void freeSession(int j) {
       freeClientsPool.Push(j);
       maxNumberAcceptedClients.Release();
+    }
+
+    // Аварийно снимаем COM-процесс
+    public static void killVFP(int m) {
+      try { Process.GetProcessById(vfpi[m]).Kill(); }
+      catch(Exception) { }
     }
 
     // Выполнить команду "schtasks"
