@@ -16,7 +16,7 @@ The https.net version differs from http.net only by the addition of one addition
 Prg scripts are processed using COM technology and VFP 9/10(Advanced) DBMS, not CGI. COM objects are created as requests from clients are executed. By default, visual error output in VFP 9/10(Advanced) DBMS is disabled. In case of an error in prg, a description of this error is returned to the script in the ERROR_MESS variable. Below is an example of a prg file and the result of its work. And also the result of working with a similar prg file, but with an error (the last line break ";" is missing).
 ```PowerShell
 PS D:\> D:\work\httpd\http.net.exe /?
-Multithreaded http.net server version 3.8.2, (C) a.kornienko.ru February 2026.
+Multithreaded http.net server version 3.9.0, (C) a.kornienko.ru April 2026.
 
 USAGE:
     http.net [Parameter1 Value1] [Parameter2 Value2] ...
@@ -37,10 +37,10 @@ Parameters:                                                                  Val
      -p      Port that the server is listening on.                               8080
      -b      Size of read/write buffers.                                         131072
      -q      Allowable number of requests in the queue.                          100
-     -q1     Allowed number of requests in the queue per IP.                     4
+     -q1     Allowed number of requests in the queue per IP.                     8
      -s      Number of requests being processed at the same time. Maximum        100
              value is 1000.
-     -s1     Allowed number of simultaneously processed requests per IP.         8
+     -s1     Allowed number of simultaneously processed requests per IP.         16
      -w      Allowed time to reserve an open channel for request that did not    10
              started. From 1 to 20 seconds.
      -n      Maximum number of dynamically running interpreters or MS VFP        30
