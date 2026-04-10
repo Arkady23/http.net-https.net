@@ -1,7 +1,7 @@
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!                                                     !!
 //!!   http.net сервер на C#.     Автор: A.Б.Корниенко   !!
-//!!   Головной блок              версия от 06.04.2026   !!
+//!!   Головной блок              версия от 10.04.2026   !!
 //!!                                                     !!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -18,6 +18,7 @@ using System.Windows.Forms;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 public class f : Form {
     public static Semaphore maxNumberAcceptedClients;
@@ -45,7 +46,7 @@ public class f : Form {
                  CT_T=CT+": text/plain\r\n", stopIconText= hs+" is stopped",
                  initCGI= "initcgi.",
            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                 ver="version 3.9.0", verD="April 2026";      //!!
+                 ver="version 3.9.1", verD="April 2026";      //!!
            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public const  int i0=0, i1=1, i2=2, i8=1500000, i9=2147483647;
     public const  byte b0=0, b1=1, b2=2, b3=3, b10=10, b13=13;
@@ -557,6 +558,7 @@ public class f : Form {
       }
 
       try {
+        delVFP(ref m);
         vfp[m]= Activator.CreateInstance(vfpa);
         vfpi[m]= vfp[m].ProcessID;
         start_VFP3(m);
@@ -608,6 +610,15 @@ public class f : Form {
     public static void killVFP(int m) {
       try { Process.GetProcessById(vfpi[m]).Kill(); }
       catch(Exception) { }
+      delVFP(ref m);
+    }
+
+    static void delVFP(ref int m) {
+      if(Marshal.IsComObject(vfp[m]))
+         Marshal.FinalReleaseComObject(vfp[m]);
+      vfp[m]= null;
+      GC.Collect();
+      GC.WaitForPendingFinalizers();
     }
 
     // Выполнить команду "schtasks"
