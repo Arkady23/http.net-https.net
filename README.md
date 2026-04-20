@@ -16,7 +16,7 @@ The https.net version differs from http.net only by the addition of one addition
 Prg scripts are processed using COM technology and VFP 9/10(Advanced) DBMS, not CGI. COM objects are created as requests from clients are executed. By default, visual error output in VFP 9/10(Advanced) DBMS is disabled. In case of an error in prg, a description of this error is returned to the script in the ERROR_MESS variable. Below is an example of a prg file and the result of its work. And also the result of working with a similar prg file, but with an error (the last line break ";" is missing).
 ```PowerShell
 PS D:\> D:\work\httpd\http.net.exe /?
-Multithreaded http.net server version 3.9.1, (C) a.kornienko.ru April 2026.
+Multithreaded http.net server version 3.9.2, (C) a.kornienko.ru April 2026.
 
 USAGE:
     http.net [Parameter1 Value1] [Parameter2 Value2] ...
@@ -43,7 +43,7 @@ Parameters:                                                                  Val
      -s1     Allowed number of simultaneously processed requests per IP.         16
      -w      Allowed time to reserve an open channel for request that did not    10
              started. From 1 to 20 seconds.
-     -n      Maximum number of dynamically running interpreters or MS VFP        30
+     -n      Maximum number of dynamically running interpreters or MS VFP        50
              instances. Processes are launched as needed depending on the
              number of concurrent requests. Maximum value is 1000.
      -log    Size of the query log in rows. The log consists of two              10000
@@ -276,3 +276,4 @@ If there is an error in the prg file:
 3.8.2 http.net / 1.8.2 https.net. February 2026. A socket queue allocation error was fixed, preventing all server threads from being used. Handler launches are now performed asynchronously with header reading, which should also improve server performance.  
 3.9.0 http.net / 1.9.0 https.net. April 2026. The maximum handshake time for establishing a TLS connection has been increased from 200 ms to 2000 ms. The default values ​​for q1 and s1 have been increased. Support for certificates encrypted with TLS version 1.3 has been added. VFP processes are now terminated if they execute PRG scripts that last longer than 25 minutes.  
 3.9.1 http.net / 1.9.1 https.net. April 2026. Before creating a new COM "VisualFoxPro.Application", added cleaning of the previous COM and calling of the garbage collector.  
+3.9.2 http.net / 1.9.2 https.net. April 2026. ATTENTION! Using a certificate with TLS 1.2 encryption is no longer supported; only TLS 1.3 is supported. The maximum number of default databases has been increased to 50. 
