@@ -1,7 +1,7 @@
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!                                                     !!
 //!!   https.net сервер на C#.    Автор: A.Б.Корниенко   !!
-//!!   Головной блок              версия от 10.04.2026   !!
+//!!   Головной блок              версия от 20.04.2026   !!
 //!!                                                     !!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -47,7 +47,7 @@ public class f : Form {
                  CT_T=CT+": text/plain\r\n", stopIconText= hs+" is stopped",
                  initCGI= "initcgi.",
            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                 ver="version 1.9.1", verD="April 2026";      //!!
+                 ver="version 1.9.2", verD="April 2026";      //!!
            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public const  int i0=0, i1=1, i2=2, i8=1500000, i9=2147483647;
     public const  byte b0=0, b1=1, b2=2, b3=3, b10=10, b13=13;
@@ -238,7 +238,7 @@ public class f : Form {
       st=100;
       st1=16;
       qu1=8;
-      db=30;
+      db=50;
 
       if(getArgs(args)){
         if(notQuit) {
@@ -890,8 +890,8 @@ Parameters:                                                                  Val
              files compressed using gzip method of the name.expansion.gz type
              are supported, for example - index.html.gz or library.js.gz etc.
      -c      Name of the file containing the PFX certificate for the TLS 1.3     "+CerFile+@"
-             or 1.2 protocol without a password. If the path is not specified,
-             the certificate is searched for in the folder where the https.net
+             protocol without a password. If the path is not specified, the
+             certificate is searched for in the folder where the https.net
              server is located and in the root folder containing the domains.
      -p      Port that the server is listening on.                               "+port.ToString()+@"
      -b      Size of read/write buffers.                                         "+bu.ToString()+@"

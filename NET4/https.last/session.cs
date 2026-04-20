@@ -1,7 +1,7 @@
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!                                                         !!
 //!!    https.net сервер на C#.      Автор: A.Б.Корниенко    !!
-//!!    class Session                версия от 06.04.2026    !!
+//!!    class Session                версия от 20.04.2026    !!
 //!!                                                         !!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -104,8 +104,7 @@ namespace https2 {
         try{
           stream = new SslStream(new NetworkStream(client,true),false);
           if (! stream.AuthenticateAsServerAsync(f.cert,false,
-              (System.Security.Authentication.SslProtocols)12288 |
-               System.Security.Authentication.SslProtocols.Tls12,
+              (System.Security.Authentication.SslProtocols)12288,  // TLS 1.3
               false).Wait(2000)) {
             stream.Dispose();
             stream = null;
