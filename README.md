@@ -3,7 +3,7 @@ Multithreaded http.net and https.net servers with Visual Foxpro on COM and with 
 
 Многопоточные http.net и https.net серверы с Visual Foxpro на COM и с Python на быстром CGI по умолчанию, с защитой от DoS-атак.
 ### General information
-The root folder for domains (www by default) should contain folders corresponding to the domain name and subdomain of the requested resource. If the request looks like [http://a.kornienko.ru](http\://a.kornienko.ru) or https://a.kornienko.ru, then the root folder for domains should contain a folder named a.kornienko.ru, for example: D:/work/www/a.kornienko.ru. If you need the same folder to also open at a different address, you must create a corresponding symbolic link to this folder so that one folder is accessible at two different paths. To do this, use the Windows mklink command with the /d key.  
+The root folder for domains (www by default) should contain folders corresponding to the domain name and subdomain of the requested resource. If the request looks like [http://a.kornienko.ru](\h\t\t\p\:\/\/a.kornienko.ru) or https://a.kornienko.ru, then the root folder for domains should contain a folder named a.kornienko.ru, for example: D:/work/www/a.kornienko.ru. If you need the same folder to also open at a different address, you must create a corresponding symbolic link to this folder so that one folder is accessible at two different paths. To do this, use the Windows mklink command with the /d key.  
 
 The number of threads should not be set to the maximum possible. The default is 100. Watch the log, the last numeric field in each entry shows the number of the running thread. Over time, you will understand how many simultaneous threads you have in use. This value is probably significantly less than 100.  
 
