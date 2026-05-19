@@ -16,12 +16,12 @@ The https.net version differs from http.net only by the addition of one addition
 Prg scripts are processed using COM technology and VFP 9/10(Advanced) DBMS, not CGI. COM objects are created as requests from clients are executed. By default, visual error output in VFP 9/10(Advanced) DBMS is disabled. In case of an error in prg, a description of this error is returned to the script in the ERROR_MESS variable. Below is an example of a prg file and the result of its work. And also the result of working with a similar prg file, but with an error (the last line break ";" is missing).
 ```PowerShell
 PS D:\> D:\work\httpd\http.net.exe /?
-Multithreaded http.net server version 3.9.2, (C) a.kornienko.ru April 2026.
+Multithreaded http.net server version 2.0.0, (C) a.kornienko.ru May 2026.
 
 USAGE:
-    http.net [Parameter1 Value1] [Parameter2 Value2] ...
-    http.net /regserver               Starting the server when the computer is turned on.
-    http.net /unregserver             Deleting the server startup task.
+    https.net [Parameter1 Value1] [Parameter2 Value2] ...
+    https.net /regserver               Starting the server when the computer is turned on.
+    https.net /unregserver             Deleting the server startup task.
 
     If necessary, Parameter and Value pairs are specified. If the value is text and contains
     spaces, then it must be enclosed in quotation marks. You can also specify the parameters
@@ -34,7 +34,13 @@ Parameters:                                                                  Val
              with the 404 code - file was not found. To compress traffic,
              files compressed using gzip method of the name.expansion.gz type
              are supported, for example - index.html.gz or library.js.gz etc.
-     -p      Port that the server is listening on.                               8080
+     -c      Name of the file containing the PFX certificate for the TLS 1.3     kornienko.ru.pfx
+             protocol without a password. If the path is not specified, the
+             certificate is searched for in the folder where the https.net
+             server is located and in the root folder containing the domains.
+     -p      Port for https-connection. Zero to disable this connection.         8080
+     -p1     Port for http-connection. Zero to disable this connection.          8443
+
      -b      Size of read/write buffers.                                         131072
      -q      Allowable number of requests in the queue.                          100
      -q1     Allowed number of requests in the queue per IP.                     8
@@ -277,4 +283,4 @@ If there is an error in the prg file:
 3.9.0 http.net / 1.9.0 https.net. April 2026. The maximum handshake time for establishing a TLS connection has been increased from 200 ms to 2000 ms. The default values ​​for q1 and s1 have been increased. Support for certificates encrypted with TLS version 1.3 has been added. VFP processes are now terminated if they execute PRG scripts that last longer than 25 minutes.  
 3.9.1 http.net / 1.9.1 https.net. April 2026. Before creating a new COM "VisualFoxPro.Application", added cleaning of the previous COM and calling of the garbage collector.  
 3.9.2 http.net / 1.9.2 https.net. April 2026. ATTENTION! Using a certificate with TLS 1.2 encryption is no longer supported; only TLS 1.3 is supported. The maximum number of default databases has been increased to 50.  
-2.0.0 https.net. May 2026. Два сервера теперь объеденены в один. По рекомендации ИИ все операции тепенрь полностью асинхронны. Произведен переход на C# .NET10. Сервер стал отдавать запросы заметно быстрее при первом обращении, теперь скорость загрузки файлов почти такая же, как при повторной загрузки из кеша.
+2.0.0 https.net. May 2026. Два сервера теперь объеденены в один. По рекомендации ИИ все операции тепенрь полностью асинхронны. Произведен переход на C# .NET10. Сервер стал отдавать запросы заметно быстрее при первом обращении. Теперь скорость загрузки файлов почти такая же, как при повторной загрузки из кеша.
