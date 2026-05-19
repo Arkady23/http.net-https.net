@@ -1,7 +1,7 @@
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!                                                     !!
 //!!   https.net сервер на C#.     Автор: A.Б.Корниенко  !!
-//!!   Серверный движок            версия от 19.05.2025  !!
+//!!   Серверный движок            версия от 20.05.2025  !!
 //!!                                                     !!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -15,7 +15,9 @@ using System.Collections.Concurrent;
 namespace https1 {
 
   class Server {
-    private const string mess="\tThe number of running tasks has exceeded allowed value of ";
+    const string mess1="\tThe number of running tasks via ",
+                 mess2=" has exceeded the allowed value of ",
+                 http="http", https="https";
     Socket listenSocket, listenSocket1;
     int stAll;
     Task[] t;         // Запуск сессий
@@ -75,9 +77,9 @@ namespace https1 {
           F.maxNumberAcceptedClients.WaitOne();
           if (F.notExit) {
             if(F.freeClientsPool.TryPop(out int j)) {
-              t[j] = F.session[j].AcceptAsync(listenSocket.AcceptAsync(),"https");
+              t[j] = F.session[j].AcceptAsync(listenSocket.AcceptAsync(),https);
             } else {
-              F.log2(mess+F.st+".");
+              F.log2(mess1+https+mess2+F.st+".");
             }
           }
        }
@@ -89,9 +91,9 @@ namespace https1 {
           F.maxNumberAcceptedClients1.WaitOne();
           if (F.notExit) {
             if(F.freeClientsPool1.TryPop(out int j)) {
-              t[j] = F.session[j].AcceptAsync(listenSocket1.AcceptAsync(),"http");
+              t[j] = F.session[j].AcceptAsync(listenSocket1.AcceptAsync(),http);
             } else {
-              F.log2(mess+F.st+".");
+              F.log2(mess1+http+mess2+F.st2+".");
             }
           }
        }
