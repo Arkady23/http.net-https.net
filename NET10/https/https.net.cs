@@ -400,7 +400,8 @@ public class F : Form {
             nIcon.Text = hs+" is running";
             if(log9>i0) {
               log("\tThe "+hs+" "+ver+" is running,\r\n"+"\t".PadLeft(24)+
-                  "http-sessions interval from 0 to "+(st2-1)+".");
+                  "http-sessions "+(port1>0?"interval from 0 to "+(st2-1):
+                  "are not provided")+".");
             }
 
           } else {
