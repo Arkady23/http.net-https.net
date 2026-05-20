@@ -31,8 +31,8 @@ public class F : Form {
     public static ConcurrentStack<int> freeClientsPool1;
     public static Stack<int> freeCGI;
     public static Stack<int> freeVFP;
-    ContextMenuStrip menu = new ContextMenuStrip();
     IContainer conta = new Container();
+    ContextMenuStrip menu = new ContextMenuStrip();
     ToolStripMenuItem menuQ = new ToolStripMenuItem();
     ToolStripMenuItem menuF = new ToolStripMenuItem();
     ToolStripMenuItem menuS = new ToolStripMenuItem();
@@ -53,8 +53,8 @@ public class F : Form {
            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                  ver="version 2.0.1", verD="May 2026";        //!!
            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    public const  int i0=0, i1=1, i2=2, i3=3, i4=4, i8=1500000, i9=2147483647;
     public const  byte b0=0, b1=1, b2=2, b3=3, b10=10, b13=13;
+    public const  int i0=0, i1=1, i2=2, i3=3, i4=4, i8=1500000, i9=2147483647;
     public static int i, k, port, port1, post, st, qu, bu, bu0, bu1, bu2, bu3, bu4, bu8,
                   db, log9, st1, st2, qu1, tw, iIP, iIP1, nClients, s9=1000, logi=i0;
     public static string IP, IP1, DocumentRoot, Folder=Thread.GetDomain().BaseDirectory,
