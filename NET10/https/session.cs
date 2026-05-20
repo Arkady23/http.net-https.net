@@ -1,7 +1,7 @@
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!                                                         !!
 //!!    https.net сервер на C#.      Автор: A.Б.Корниенко    !!
-//!!    class Session                версия от 19.05.2026    !!
+//!!    class Session                версия от 20.05.2026    !!
 //!!                                                         !!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -177,7 +177,7 @@ namespace https2 {
                   }
                 }
               }
-              if(R==F.b1) typeAsync();
+              if(R==F.b1) await typeAsync();
             }
           } else {
             if(res.Length>F.i0) {
@@ -461,7 +461,7 @@ namespace https2 {
     }
 
     // Отправка файла
-    async void typeAsync(){
+    async Task typeAsync(){
       head = F.OK+head+F.CL+": ";
       fs = File.OpenRead(res);
       nf = fs.Length;

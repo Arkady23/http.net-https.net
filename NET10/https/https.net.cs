@@ -1,7 +1,7 @@
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!!                                                     !!
 //!!   https.net сервер на C#.    Автор: A.Б.Корниенко   !!
-//!!   Головной блок              версия от 19.05.2026   !!
+//!!   Головной блок              версия от 20.05.2026   !!
 //!!                                                     !!
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -51,7 +51,7 @@ public class F : Form {
                  logX=hn+".x.log", logY=hn+".y.log", CT_T=CT+": text/plain\r\n", 
                  stopIconText= hs+" is stopped", initCGI= "initcgi.",
            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                 ver="version 2.0.0", verD="May 2026";        //!!
+                 ver="version 2.0.1", verD="May 2026";        //!!
            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public const  int i0=0, i1=1, i2=2, i3=3, i4=4, i8=1500000, i9=2147483647;
     public const  byte b0=0, b1=1, b2=2, b3=3, b10=10, b13=13;
@@ -202,7 +202,7 @@ public class F : Form {
       // Анонимная функция перехвата и вывода ошибки
       AppDomain.CurrentDomain.UnhandledException += (sender, eventArgs) =>
       {
-        log2(" "+((Exception)eventArgs.ExceptionObject).ToString());
+        if(log9>i0) log2("\t"+((Exception)eventArgs.ExceptionObject).ToString());
         StopServer();
       };
 
@@ -260,7 +260,7 @@ public class F : Form {
             if(!File.Exists(CerFile)) CerFile=string.Empty;
           }
           if(CerFile==string.Empty) {
-            log2("\tThe "+hs+" cannot work. Certificate was not found :(");
+            if(log9>i0) log2("\tCertificate was not found.");
             port = i0;
           } else {
             try {
@@ -271,7 +271,7 @@ public class F : Form {
                      EnabledSslProtocols = SslProtocols.Tls13,
                      ClientCertificateRequired = false };
             } catch(Exception ex) {
-              log2("The "+hs+" cannot work. Certificate error: "+ex.Message);
+              if(log9>i0) log2("\tCertificate error: "+ex.Message);
               cert = null;
             }
             if(!(cert!=null)) port=i0;
@@ -324,7 +324,8 @@ public class F : Form {
               Parallel.For(i0,nClients,j => { session[j] = new Session(j); });
               notExit=true;
             }catch(Exception){
-              if(log9>i0) log("\tThere were problems when creating threads. Try updating Windows.");
+              if(log9>i0)
+                 log("\tThere were problems when creating threads. Try updating Windows.");
             }
           }
         }
@@ -343,8 +344,9 @@ public class F : Form {
 
             cgib[i0] = b1;
           } else {
-            log("\tThe \""+Proc+("\" interpreter or\r\n".PadRight(41))+
-                "\tthe \""+DocumentRoot+initCGI+Ext+"\" script could not be run.");
+            if(log9>i0)
+               log("\tThe \""+Proc+("\" interpreter or\r\n".PadRight(41))+
+                   "\tthe \""+DocumentRoot+initCGI+Ext+"\" script could not be run.");
           }
 
           // Запустить и настроить экземпляр VFP
@@ -363,7 +365,9 @@ public class F : Form {
             if(vfpa!=null){
               VFP9= vfp[i0].Eval("sys(17)")=="Pentium";
               if(start_VFP2(i0)) {
-                log("\tCOM server 'VFP.memlib"+(VFP9?"32'":"'")+" is not registered in Windows registry.");
+                if(log9>i0)
+                   log("\tCOM server 'VFP.memlib"+(VFP9?"32'":"'")+
+                       " is not registered in Windows registry.");
                 vfpa= null;
               }
             }
