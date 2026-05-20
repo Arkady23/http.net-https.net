@@ -16,7 +16,7 @@ The https.net version differs from http.net only by the addition of one addition
 Prg scripts are processed using COM technology and VFP 9/10(Advanced) DBMS, not CGI. COM objects are created as requests from clients are executed. By default, visual error output in VFP 9/10(Advanced) DBMS is disabled. In case of an error in prg, a description of this error is returned to the script in the ERROR_MESS variable. Below is an example of a prg file and the result of its work. And also the result of working with a similar prg file, but with an error (the last line break ";" is missing).
 ```PowerShell
 PS D:\> D:\work\httpd\http.net.exe /?
-Multithreaded http.net server version 2.0.0, (C) a.kornienko.ru May 2026.
+Multithreaded http.net server version 2.0.1, (C) a.kornienko.ru May 2026.
 
 USAGE:
     https.net [Parameter1 Value1] [Parameter2 Value2] ...
