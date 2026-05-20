@@ -7,7 +7,7 @@ The root folder for domains (www by default) should contain folders correspondin
 
 The number of threads should not be set to the maximum possible. The default is 100. Watch the log, the last numeric field in each entry shows the number of the running thread. Over time, you will understand how many simultaneous threads you have in use. This value is probably significantly less than 100.  
 
-Http and https servers support only fast CGI, using a simple script using the quick start technology. For example, for the Python language, this is the initcgi.py script, given in the repository in the NET4/www/ folder. The script interpreter runs the initcgi script not at the moment of receiving a request from the client, but after sending the next response. Such an initial script can be implemented in most modern interpreted languages. This does not apply to prg scripts, for which the initCGI role is performed by the VisualFoxPro.Application COM server.  
+Http and https servers support only fast CGI, using a simple script using the quick start technology. For example, for the Python language, this is the initcgi.py script, given in the repository in the www folder. The script interpreter runs the initcgi script not at the moment of receiving a request from the client, but after sending the next response. Such an initial script can be implemented in most modern interpreted languages. This does not apply to prg scripts, for which the initCGI role is performed by the VisualFoxPro.Application COM server.  
 
 By default, http and https servers will process scripts in Visual Foxpro and Python. But in the server parameters, you can replace the script extension and handler with any other that you prefer for one reason or another — the popular php or "dotnet fsi", which executes scripts with the fsx extension, written in F#.  
 
@@ -75,7 +75,7 @@ Parameters:                                                                  Val
 
 Число потоков не следут задавать максимально возможным. По умолчанию — 100. Наблюдайте за журналом, в последнем числовом поле в каждой записи отображен номер работающего потока. Со временем вы поймете какое число одновременных потоков у вас используется. Вероятно это значение значительно меньше 100.  
 
-Серверы http и https поддерживают только быстрый CGI, используя простой скрипт по технологии быстрый старт. Например, для языка Python это скрипт initcgi.py, приведеный в репозитории в папке NET4/www/. Интерпретатор скриптов запускает initcgi-скрипт не в момент поступления запроса от клиента, а после отправки очередного ответа. Такой начальный скрипт может быть реализовон на большинстве современных интерпретируемых языках. Это не относится к скриптам prg, у которых роль initCGI выполняет COM-сервер VisualFoxPro.Application.  
+Серверы http и https поддерживают только быстрый CGI, используя простой скрипт по технологии быстрый старт. Например, для языка Python это скрипт initcgi.py, приведеный в репозитории в папке www. Интерпретатор скриптов запускает initcgi-скрипт не в момент поступления запроса от клиента, а после отправки очередного ответа. Такой начальный скрипт может быть реализовон на большинстве современных интерпретируемых языках. Это не относится к скриптам prg, у которых роль initCGI выполняет COM-сервер VisualFoxPro.Application.  
 
 По умолчанию серверы http и https будут обрабатывать скрипты на Visual Foxpro и Python. Но в параметрах серверов вы можете заменить расширение скрипта и обработчик на любое другое, которому вы по тем или иным причинам отдаете предпочтение — на популярный php или на "dotnet fsi", выполняющий скрипты с расширением fsx, написанные на F#.  
 
@@ -189,7 +189,7 @@ If there is an error in the prg file:
 Задать вопрос или обсудить тему, касающуюся серверов http/https.net или VFP/VFPA, вы можете в разделе проекта `Issues` > `New issue`.  
 
 ### История версий
-В папках httpd и https всегда можно скачать последние рабочие версии http.net.exe и https.net.exe.  
+В папках http или httpd и https всегда можно скачать последние рабочие версии http.net.exe и https.net.exe. Для нагруженных порталов используйте вариант сервера .NET10+, а не вариант с FrameWork 4.8.  
   
 1.0. Январь 2023. Первая версия.  
 1.1. Февраль 2023. По рекомендации MS Corp. убраны массивы с динамически изменяющимися размерами в целях уменьшения нагрузки на системный сборщик мусора в ОП. Добавлено кэширование небольших файлов с целью увеличения скорости работы сервера.  
